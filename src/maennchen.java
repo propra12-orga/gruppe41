@@ -4,12 +4,17 @@ import java.awt.Image;
 
 public class maennchen {
 	
-	private Image aussehen;
+	private String aussehen;
+	public int xposition;
+	public int yposition;
+	public double geschwindigkeit;
+	public int leben;
+	public String[] gegenstaende;
 	
 	
-	//Konstruktor
+	//Konstruktor, notwendig sollten wir in den optionen die möglichkeit bereitstellen, aus mehreren design wählen zu können
 	
-	maennchen(Image image) {
+	maennchen(String image) {
 		aussehen = image;
 	}
 	

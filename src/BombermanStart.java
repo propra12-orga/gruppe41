@@ -1,10 +1,11 @@
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import javax.swing.JFrame;
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 
 
@@ -14,9 +15,16 @@ public class BombermanStart {
 	public static void main(String[] args) {
 		
 		
-		JFrame StartMenu = new JFrame("bomber");
-		StartMenu.pack();
+		final JFrame StartMenu = new JFrame("bomber");
 		StartMenu.setResizable(false);
+		StartMenu.setMinimumSize(new Dimension(397, 347));
+		StartMenu.setSize(new Dimension(386, 294));
+		StartMenu.setLocation(new Point(450, 250));
+		StartMenu.setForeground(Color.RED);
+		StartMenu.setIconImage(Toolkit.getDefaultToolkit().getImage(BombermanStart.class.getResource("/bilder/maenchen1.jpg")));
+		StartMenu.setTitle("Bomberman 0.1");
+		StartMenu.setBackground(Color.WHITE);
+		StartMenu.pack();
 		
 		JPanel Hintegrund = new JPanel();
 		Hintegrund.setBackground(Color.RED);
@@ -37,22 +45,67 @@ public class BombermanStart {
 		);
 		
 		JButton btnAufGehts = new JButton("Auf gehts!");
+		btnAufGehts.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				bomberman bomber= new bomberman();
+				
+				//menü soll unsichtbar werde, wenn ich das spiel starte und wieder erscheinen, wenn ich dieses schließe
+				//müsste über listener funktionieren, ist aber zu früh am morgen
+				//StartMenu.setVisible(false);
+				
+			}
+		});
 		btnAufGehts.setFont(new Font("Fighting Spirit TBS", Font.PLAIN, 11));
 		btnAufGehts.setBackground(Color.RED);
 		
 		JButton btnOptionen = new JButton("Optionen");
+		btnOptionen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				
+				
+				
+				// soll neuen JFrame öffnen, der die Optionen enthält
+				
+				
+				
+			}
+		});
 		btnOptionen.setFont(new Font("Fighting Spirit TBS", Font.PLAIN, 11));
-		btnOptionen.setBackground(Color.RED);
+		btnOptionen.setBackground(Color.LIGHT_GRAY);
 		
 		JButton btnHighscore = new JButton("Highscore");
+		btnHighscore.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				
+				
+				// soll neuen JFrame öffnen, der den Highscore enthält
+				
+				
+				
+				
+			}
+		});
+		btnHighscore.setForeground(Color.WHITE);
 		btnHighscore.setFont(new Font("Fighting Spirit TBS", Font.PLAIN, 11));
-		btnHighscore.setBackground(Color.RED);
+		btnHighscore.setBackground(Color.BLACK);
 		
-		JButton btnIchMussLos = new JButton("Ich muss los...");
+		JButton btnIchMussLos = new JButton("Ich muss weg...");
+		btnIchMussLos.addActionListener(new ActionListener() {
+			
+			
+			//schließt das programm zusätzlich zu dem "X"
+			
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
 		btnIchMussLos.setFont(new Font("Fighting Spirit TBS", Font.PLAIN, 11));
-		btnIchMussLos.setBackground(Color.RED);
+		btnIchMussLos.setBackground(Color.YELLOW);
 		
 		JTextPane txtpnBomberman = new JTextPane();
+		txtpnBomberman.setEditable(false);
 		txtpnBomberman.setBackground(Color.RED);
 		txtpnBomberman.setFont(new Font("Fighting Spirit TBS", Font.PLAIN, 46));
 		txtpnBomberman.setText("Bomberman");

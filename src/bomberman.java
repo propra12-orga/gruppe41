@@ -14,18 +14,23 @@ public class bomberman extends Canvas{
 		
 		
 		// Spielfläche
-		JFrame spielflaeche = new JFrame("bomber");
+		final JFrame spielflaeche = new JFrame("bomber");
 		JPanel panel = (JPanel) spielflaeche.getContentPane();
 		panel.setPreferredSize(new Dimension(800,600));
 		panel.setLayout(null);
 		setBounds(0,0,800,600);
 		panel.add(this);
-		setIgnoreRepaint(true);
+		setIgnoreRepaint(false);
 		spielflaeche.pack();
 		spielflaeche.setResizable(false);
+		spielflaeche.setVisible(true);
 		spielflaeche.addWindowListener(new WindowAdapter(){
+			// versuche es hinzubekommen, dass das menü unsichtbar wird, wenn ich das spiel start und wenn ich spiel schließe, dass das menu wierder
+			// erscheint
 			public void windowClosing(WindowEvent e) {
-				System.exit(0);
+				
+				// dispose() müsste doch das gleiche machen wie System.exit(0) oder?
+				spielflaeche.dispose();
 			}});
 		
 		
@@ -36,6 +41,6 @@ public class bomberman extends Canvas{
 	public static void main(String[] args) {
 		
 		
-		bomberman BOMBER= new bomberman();
+		bomberman bomber= new bomberman();
 	}
 }
