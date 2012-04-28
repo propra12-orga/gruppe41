@@ -6,6 +6,8 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
 
 
 
@@ -19,11 +21,11 @@ public class BombermanStart {
 		StartMenu.setResizable(false);
 		StartMenu.setMinimumSize(new Dimension(397, 347));
 		StartMenu.setSize(new Dimension(386, 294));
-		StartMenu.setLocation(new Point(450, 250));
+		StartMenu.setLocation(new Point(500, 250));
 		StartMenu.setForeground(Color.RED);
 		StartMenu.setIconImage(Toolkit.getDefaultToolkit().getImage(BombermanStart.class.getResource("/bilder/maenchen1.jpg")));
 		StartMenu.setTitle("Bomberman 0.1");
-		StartMenu.setBackground(Color.WHITE);
+		StartMenu.setBackground(Color.RED);
 		StartMenu.pack();
 		
 		JPanel Hintegrund = new JPanel();
@@ -49,6 +51,7 @@ public class BombermanStart {
 			public void actionPerformed(ActionEvent arg0) {
 				bomberman bomber= new bomberman();
 				
+				
 				//menü soll unsichtbar werde, wenn ich das spiel starte und wieder erscheinen, wenn ich dieses schließe
 				//müsste über listener funktionieren, ist aber zu früh am morgen
 				//StartMenu.setVisible(false);
@@ -66,6 +69,18 @@ public class BombermanStart {
 				
 				
 				// soll neuen JFrame öffnen, der die Optionen enthält
+				JFrame optionen = new JFrame( "Optionen" );
+				optionen.setDefaultCloseOperation( optionen.DISPOSE_ON_CLOSE);
+				//optionen.dispose();
+				optionen.setSize( 250, 100 );
+				optionen.setResizable(false);
+				optionen.setMinimumSize(new Dimension(397, 347));
+				optionen.setSize(new Dimension(386, 294));
+				optionen.setLocation(new Point(500, 250));
+				optionen.setForeground(Color.RED);
+				optionen.setIconImage(Toolkit.getDefaultToolkit().getImage(BombermanStart.class.getResource("/bilder/maenchen1.jpg")));
+				StartMenu.setBackground(Color.RED);
+				optionen.setVisible( true );
 				
 				
 				
@@ -81,6 +96,18 @@ public class BombermanStart {
 				
 				
 				// soll neuen JFrame öffnen, der den Highscore enthält
+				JFrame highscore= new JFrame( "Highscore" );
+				highscore.setDefaultCloseOperation( highscore.DISPOSE_ON_CLOSE);
+				//Optionen.dispose();
+				highscore.setSize( 250, 100 );
+				highscore.setResizable(false);
+				highscore.setMinimumSize(new Dimension(397, 347));
+				highscore.setSize(new Dimension(386, 294));
+				highscore.setLocation(new Point(500, 250));
+				highscore.setForeground(Color.RED);
+				highscore.setIconImage(Toolkit.getDefaultToolkit().getImage(BombermanStart.class.getResource("/bilder/maenchen1.jpg")));
+			    //f.add() ;
+				highscore.setVisible( true );
 				
 				
 				

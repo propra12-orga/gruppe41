@@ -2,9 +2,10 @@ import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.*;
+import java.awt.*;
 
 public class bomberman extends Canvas{
 	
@@ -21,6 +22,7 @@ public class bomberman extends Canvas{
 		setBounds(0,0,800,600);
 		panel.add(this);
 		setIgnoreRepaint(false);
+		spielflaeche.setLocation(new Point(300, 120));
 		spielflaeche.pack();
 		spielflaeche.setResizable(false);
 		spielflaeche.setVisible(true);
