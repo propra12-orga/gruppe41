@@ -49,7 +49,8 @@ public class BombermanStart {
 		JButton btnAufGehts = new JButton("Auf gehts!");
 		btnAufGehts.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				bomberman bomber= new bomberman();
+				//bomberman bomber= new bomberman();
+				 spielfeld eins=new spielfeld();
 				
 				
 				//menü soll unsichtbar werde, wenn ich das spiel starte und wieder erscheinen, wenn ich dieses schließe

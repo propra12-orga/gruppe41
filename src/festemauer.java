@@ -1,3 +1,5 @@
+import java.awt.Toolkit;
+
 
 public class festemauer extends mauern{{
 	
@@ -8,7 +10,7 @@ public class festemauer extends mauern{{
 	
 	// wenn sie nicht zerstörbar ist, kann man ihr kein leben abziehen
 	leben=1;
-	aussehen="mauerfest.jpg";
+	aussehen=Toolkit.getDefaultToolkit().getImage( "/bilder/mauerfestklein.jpg" );
 			
 
 }}

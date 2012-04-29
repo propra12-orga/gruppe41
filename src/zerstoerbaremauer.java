@@ -1,3 +1,5 @@
+import java.awt.Toolkit;
+
 
 public class zerstoerbaremauer extends mauern{{
 	
@@ -7,7 +9,7 @@ public class zerstoerbaremauer extends mauern{{
 	
 	// leben beträgt 10, weil eine normale bombe ja alle mauern in ihrem radius zerstören können sollte
 	leben=10;
-	aussehen="mauerzerstoerbar.jpg";
+	aussehen=Toolkit.getDefaultToolkit().getImage( "/bilder/mauerzerstoerbarklein.jpg");
 	
 
 }}

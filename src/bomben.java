@@ -1,19 +1,19 @@
-
+import java.awt.*;
 
 public abstract class bomben {
 	
 	
-	String bezeichner;
+	public String bezeichner;
 	public double schaden;
 	public double radius;
-	public String aussehen;
+	public Image aussehen;
 	public double zuendschnurrlaenge;;
 	
 		
 	
 	
-	bomben(){
+	//bomben(){
 		
-	}
+	//}
 
 }

@@ -1,8 +1,10 @@
+import java.awt.*;
+
 
 public abstract class mauern {
 
 		String bezeichner;
 		public boolean zerstörbar;
 		public int leben;
-		String aussehen;
+		public Image aussehen;
 }
