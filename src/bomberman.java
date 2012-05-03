@@ -20,6 +20,8 @@ public class bomberman extends Canvas{
 	public bomberman() {
 		
 		
+		
+		
 		// Spielfläche
 		final JFrame spielflaeche = new JFrame("bomber");
 		JPanel panel = (JPanel) spielflaeche.getContentPane();
@@ -71,6 +73,9 @@ public class bomberman extends Canvas{
 	public static void main(String[] args) {
 		
 		
-		bomberman bomber= new bomberman();
+		int i = 8;
+		Square[][] map0=new Square [i][i];
+		
+		Map Map1=new Map(i,map0); 
 	}
 }
