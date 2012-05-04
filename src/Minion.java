@@ -124,6 +124,7 @@ public class Minion{
 	}
 	// Draw-Methode
 	public void draw(){
-		// Furs Erste Reicht schon ein Kreis
+		StdDraw.setPenColor(StdDraw.BLUE);
+		StdDraw.filledCircle(((2.0*this.X+1)/(2.0*Map1.getSize())),(2.0*this.Y+1)/(2.0*Map1.getSize()),0.5/Map1.getSize());
 	}
 }

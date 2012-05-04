@@ -15,22 +15,24 @@ public class Map{
 		this.size = s;
 		this.fields = f;
 	}
-	// Draw-Methode - Strukturiert, aber unfertig
+	// Draw-Methode - sturzt ab falls this.getSize = 0
 	public void draw(){
+		StdDraw.setPenColor(StdDraw.CYAN);
+		StdDraw.filledSquare(0.5,0.5,0.5);
 		for(int j=0;j<this.getSize();j++){
 			for(int k=0;k<this.getSize();k++){
-				if(fields[j][k]==0 || fields[j][k]==1){
-					// LEERES FELD ODER LEERES FELD MIT BOMBE Weisses oder hellbraunes Quadrat zeichnen
-				}
 				if(fields[j][k]==2){
-					// FRAGILE BARRIKADE Orangenes Quadrat zeichnen oder Bild einfugen
+					StdDraw.setPenColor(StdDraw.ORANGE);
+					StdDraw.filledSquare(((2.0*j+1)/(2.0*this.getSize())),(2.0*k+1)/(2.0*this.getSize()),0.5/this.getSize());
 				}
 				if(fields[j][k]==3){
-					// BARRIKADE Rotes Quadrat zeichnen oder Bild einfugen
+					StdDraw.setPenColor(StdDraw.RED);
+					StdDraw.filledSquare(((2.0*j+1)/(2.0*this.getSize())),(2.0*k+1)/(2.0*this.getSize()),0.5/this.getSize());
 				}
 				if(fields[j][k]==4){
-					// AUSGANG Blaues Quadrat zeichnen oder Bild einfugen
-				}				
+					StdDraw.setPenColor(StdDraw.BLUE);
+					StdDraw.filledSquare(((2.0*j+1)/(2.0*this.getSize())),(2.0*k+1)/(2.0*this.getSize()),0.5/this.getSize());
+				}			
 			}
 		}
 	}
