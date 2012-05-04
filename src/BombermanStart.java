@@ -9,14 +9,8 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
 
-
-
-
 public class BombermanStart {
-
 	public static void main(String[] args) {
-		
-		
 		final JFrame StartMenu = new JFrame("bomber");
 		StartMenu.setResizable(false);
 		StartMenu.setMinimumSize(new Dimension(397, 347));
