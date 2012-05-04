@@ -52,7 +52,7 @@ public class Minion{
 	// Allgemeine Move-Methode - noch nicht auf Bugs getestet //
 	public void move(int z){
 		if(z==1||z==2||z==3||z==4){
-			boolean gamerunning = true;
+			boolean goal = false;
 			facedirection = z;
 			int a = this.X;
 			int b = this.Y;
@@ -74,11 +74,11 @@ public class Minion{
 					this.X = a;
 					this.Y = b;
 					// LEVEL BEENDEN - beim vollstandigen Spiel mussen dafur alle Gegner besiegt sein
-					gamerunning = false;
+					goal = false;
 				}
 			}
 			System.out.println("Nr"+this.number+" moved to ("+this.X+","+this.Y+").");
-			if(!gamerunning){
+			if(goal){
 				System.out.println("Sie haben ihr Ziel erreicht!");		
 			}
 		}
@@ -124,7 +124,12 @@ public class Minion{
 	}
 	// Draw-Methode
 	public void draw(){
-		StdDraw.setPenColor(StdDraw.BLUE);
+		StdDraw.setPenColor(StdDraw.GREEN);
 		StdDraw.filledCircle(((2.0*this.X+1)/(2.0*Map1.getSize())),(2.0*this.Y+1)/(2.0*Map1.getSize()),0.5/Map1.getSize());
+		StdDraw.setPenColor(StdDraw.BLACK);
+		if(this.facedirection==1)StdDraw.filledCircle(((2.0*this.X+1)/(2.0*Map1.getSize())),(2.0*this.Y+1.5)/(2.0*Map1.getSize()),0.2/Map1.getSize());
+		if(this.facedirection==2)StdDraw.filledCircle(((2.0*this.X+1.5)/(2.0*Map1.getSize())),(2.0*this.Y+1)/(2.0*Map1.getSize()),0.2/Map1.getSize());
+		if(this.facedirection==3)StdDraw.filledCircle(((2.0*this.X+1)/(2.0*Map1.getSize())),(2.0*this.Y+0.5)/(2.0*Map1.getSize()),0.2/Map1.getSize());
+		if(this.facedirection==4)StdDraw.filledCircle(((2.0*this.X+0.5)/(2.0*Map1.getSize())),(2.0*this.Y+1)/(2.0*Map1.getSize()),0.2/Map1.getSize());
 	}
 }

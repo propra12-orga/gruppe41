@@ -2,30 +2,18 @@ public class bomberman {
 	public static void main(String[] args) {
 		// Boolean GameRunning
 		boolean gamerunning = true;
-		// Kartengrosse festlegen - ACHTUNG: Absturz in Methode Draw falls i = 0!
+		// Kartengrosse festlegen - Fehler behoben, 4<Size<16
 		int i = 8;
-		// Leeres Kartenarray erstellen
-		int[][] map0 = new int[i][i];
-		for(int j=0;j<i;j++){
-			for(int k=0;k<i;k++){
-				map0[j][k] = 0;
-			}
-		}
-		// Ausgang an Stelle 7,7 erstellen
-		map0[7][7] = 4;
-		// Hindernisse erstellen
-		map0[7][1] = 3;
-		map0[5][4] = 3;
-		map0[6][3] = 2;
-		map0[3][6] = 2;
 		// Erstelle Objekt vom Typ Map
-		Map Map1 = new Map(i,map0);
+		Map Map1 = new Map(i);
+		// Bearbeite Map
+		Map1.cleanMap();
+		//Map1.generateChaos(1);
+		Map1.generateBlocks();
+		Map1.cleanEdges();
+		Map1.generateExit();
 		// Erstelle Spielerfigur auf der Karte
-		Minion Spieler = new Minion(1,0,0,Map1);
-		// Male Karte
-		Map1.draw();
-		// Male Figur
-		Spieler.draw();
+		Minion Spieler = new Minion(1,0,0,Map1); //   <== Hier wird der Spieler erzeugt, ab hier kannst du die Move-Methode anwenden
 		//---------------------------------------Testlauf
 		// Bewege Spielfigur nach oben und rechts, schreibe Koordinaten auf Konsole
 		for(int m=0;m<7;m++){
@@ -34,14 +22,14 @@ public class bomberman {
 			Spieler.draw();
 			Spieler.move(2);
 			try{
-				Thread.sleep(100);
+				Thread.sleep(250);
 			}
 			catch(Exception e){
 			}
 			Map1.draw();
 			Spieler.draw();
 			try{
-				Thread.sleep(100);
+				Thread.sleep(250);
 			}
 			catch(Exception e){
 			}
