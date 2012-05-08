@@ -74,12 +74,18 @@ public class Minion{
 					this.X = a;
 					this.Y = b;
 					// LEVEL BEENDEN - beim vollstandigen Spiel mussen dafur alle Gegner besiegt sein
-					goal = false;
+					goal = true;
 				}
 			}
 			System.out.println("Nr"+this.number+" moved to ("+this.X+","+this.Y+").");
 			if(goal){
-				System.out.println("Sie haben ihr Ziel erreicht!");		
+				System.out.println("Sie haben ihr Ziel erreicht!");
+				try{
+					Thread.sleep(500);
+				}
+				catch(Exception e){
+				}
+				System.exit(0);
 			}
 		}
 		else{

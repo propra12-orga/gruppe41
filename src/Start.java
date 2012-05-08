@@ -27,7 +27,7 @@ import java.io.*;
 import java.awt.Color;
 
 
-public class start extends JFrame {
+public class Start extends JFrame {
 
 	
 	
@@ -70,7 +70,7 @@ public class start extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					start frame = new start();
+					Start frame = new Start();
 					frame.setResizable(false);
 					frame.setLocation(new Point(500, 250));
 					frame.setVisible(true);
@@ -81,7 +81,7 @@ public class start extends JFrame {
 		});};
 		
 	
-	public start() {
+	public Start() {
 		setTitle("Bomberman 0.2");
 		setSize(new Dimension(450, 400));
 		
@@ -233,7 +233,7 @@ public class start extends JFrame {
 				cl.show(contentPane, card);
 			}
 		});
-		schliessen2.setIcon(new ImageIcon(start.class.getResource("/bilder/zurueck.jpg")));
+		schliessen2.setIcon(new ImageIcon(Start.class.getResource("/bilder/zurueck.jpg")));
 		
 		JButton Steuerung = new JButton("Steuerung");
 		Steuerung.addActionListener(new ActionListener() {
@@ -327,7 +327,7 @@ public class start extends JFrame {
 				cl.show(contentPane, card);
 			}
 		});
-		schliessen.setIcon(new ImageIcon(start.class.getResource("/bilder/zurueck.jpg")));
+		schliessen.setIcon(new ImageIcon(Start.class.getResource("/bilder/zurueck.jpg")));
 		
 		JLabel ersterTextFeld = new JLabel(erster);
 		JLabel ersterZeit = new JLabel(ersterpunkte);
@@ -468,7 +468,7 @@ public class start extends JFrame {
 				cl.show(contentPane, card);
 			}
 		});
-		schliessen1.setIcon(new ImageIcon(start.class.getResource("/bilder/zurueck.jpg")));
+		schliessen1.setIcon(new ImageIcon(Start.class.getResource("/bilder/zurueck.jpg")));
 		
 		
 		JLabel Spielfigur = new JLabel("Spielfigur");
@@ -536,10 +536,10 @@ public class start extends JFrame {
 				cl.show(contentPane, card);
 			}
 		});
-		schliessen3.setIcon(new ImageIcon(start.class.getResource("/bilder/zurueck.jpg")));
+		schliessen3.setIcon(new ImageIcon(Start.class.getResource("/bilder/zurueck.jpg")));
 		
 		JButton WASD_Steuerung = new JButton("");
-		WASD_Steuerung.setIcon(new ImageIcon(start.class.getResource("/bilder/wasd1.jpg")));
+		WASD_Steuerung.setIcon(new ImageIcon(Start.class.getResource("/bilder/wasd1.jpg")));
 		WASD_Steuerung.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				steuerung=0;
@@ -547,7 +547,7 @@ public class start extends JFrame {
 		});
 		
 		JButton Pfeil_Steuerung = new JButton("");
-		Pfeil_Steuerung.setIcon(new ImageIcon(start.class.getResource("/bilder/steuerpfeil1.jpg")));
+		Pfeil_Steuerung.setIcon(new ImageIcon(Start.class.getResource("/bilder/steuerpfeil1.jpg")));
 		Pfeil_Steuerung.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				steuerung=1;
@@ -599,7 +599,7 @@ public class start extends JFrame {
 				cl.show(contentPane, card);
 			}
 		});
-		schliessen4.setIcon(new ImageIcon(start.class.getResource("/bilder/zurueck.jpg")));
+		schliessen4.setIcon(new ImageIcon(Start.class.getResource("/bilder/zurueck.jpg")));
 		
 		JTextArea txtrDiesIstDas = new JTextArea();
 		txtrDiesIstDas.setBackground(CreditsPanel.getBackground());
@@ -644,7 +644,7 @@ public class start extends JFrame {
 				cl.show(contentPane, card);
 			}
 		});
-		schliessen5.setIcon(new ImageIcon(start.class.getResource("/bilder/zurueck.jpg")));
+		schliessen5.setIcon(new ImageIcon(Start.class.getResource("/bilder/zurueck.jpg")));
 		
 		JButton Einzel = new JButton("SingelPlayer");
 		Einzel.addActionListener(new ActionListener() {
@@ -773,7 +773,7 @@ public class start extends JFrame {
 				cl.show(contentPane, card);
 			}
 		});
-		schliessen6.setIcon(new ImageIcon(start.class.getResource("/bilder/zurueck.jpg")));
+		schliessen6.setIcon(new ImageIcon(Start.class.getResource("/bilder/zurueck.jpg")));
 		
 		JButton SpielStart = new JButton("Start");
 		SpielStart.addActionListener(new ActionListener() {
@@ -899,7 +899,7 @@ public class start extends JFrame {
 				
 			}
 		});
-		schliessen7.setIcon(new ImageIcon(start.class.getResource("/bilder/zurueck.jpg")));
+		schliessen7.setIcon(new ImageIcon(Start.class.getResource("/bilder/zurueck.jpg")));
 		
 		JLabel lblDiesesFeaturIst = new JLabel("Dieses Featur ist noch nicht implementiert.");
 		GroupLayout gl_MultiPanel = new GroupLayout(MultiPanel);

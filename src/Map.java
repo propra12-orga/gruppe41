@@ -21,7 +21,7 @@ public class Map{
 		if(s>this.maxSize) this.size = this.maxSize;
 		this.fields = new int[this.size][this.size];
 	}
-	// Draw-Methode
+	// Draw-Methoden
 	public void draw(){
 		StdDraw.setPenColor(StdDraw.CYAN);
 		StdDraw.filledSquare(0.5,0.5,0.5);
@@ -40,6 +40,24 @@ public class Map{
 					StdDraw.filledSquare(((2.0*j+1)/(2.0*this.getSize())),(2.0*k+1)/(2.0*this.getSize()),0.5/this.getSize());
 				}			
 			}
+		}
+	}
+	public void draw(int x, int y){
+		if(fields[x][y]==0 || fields[x][y] == 1){
+			StdDraw.setPenColor(StdDraw.CYAN);
+			StdDraw.filledSquare(((2.0*x+1)/(2.0*this.getSize())),(2.0*y+1)/(2.0*this.getSize()),0.5/this.getSize());
+		}
+		if(fields[x][y]==2){
+			StdDraw.setPenColor(StdDraw.ORANGE);
+			StdDraw.filledSquare(((2.0*x+1)/(2.0*this.getSize())),(2.0*y+1)/(2.0*this.getSize()),0.5/this.getSize());
+		}
+		if(fields[x][y]==3){
+			StdDraw.setPenColor(StdDraw.RED);
+			StdDraw.filledSquare(((2.0*x+1)/(2.0*this.getSize())),(2.0*y+1)/(2.0*this.getSize()),0.5/this.getSize());
+		}
+		if(fields[x][y]==4){
+			StdDraw.setPenColor(StdDraw.BLUE);
+			StdDraw.filledSquare(((2.0*x+1)/(2.0*this.getSize())),(2.0*y+1)/(2.0*this.getSize()),0.5/this.getSize());
 		}
 	}
 	// Get-Methoden
