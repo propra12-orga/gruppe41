@@ -2,7 +2,7 @@ import java.awt.*;
 
 public class TastaturBelegung {
 		
-	Minion k=new Minion(1, 1,0, 6);//// Einfach für Map Zahl 6 eingegeben, damit kein fehler ausgegeben wird.
+	Minion k=new Minion(1, 1,0, new Map(6));//// Einfach für Map Zahl 6 eingegeben, damit kein fehler ausgegeben wird.
 	public boolean keyDown (Event e, int key)
 	  {
 	    // linke Pfeiltaste
