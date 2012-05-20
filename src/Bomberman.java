@@ -1,7 +1,12 @@
 import javax.swing.JFrame;
+
+
+import java.util.Iterator;
+import java.util.List;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyAdapter;
 import java.lang.Thread;
+import java.util.ArrayList;
 
 public class Bomberman extends JFrame{
 
@@ -10,6 +15,8 @@ public class Bomberman extends JFrame{
 	public static boolean left = false;
 	public static boolean down = false;
 	public static boolean right = false;
+	public static boolean bomb = false;
+	
 	
 	public Bomberman(Map ma){
 		super("MasterBomb!");
@@ -36,6 +43,9 @@ public class Bomberman extends JFrame{
 			if(e.getKeyCode() == KeyEvent.VK_LEFT){
 				Bomberman.left = true;
 			}
+			if(e.getKeyCode() == KeyEvent.VK_SPACE){
+				Bomberman.bomb = true;
+			}
 			if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
 				System.exit(0);
 			}
@@ -51,15 +61,58 @@ public class Bomberman extends JFrame{
 		public void run(){
 			map0.draw();
 			mini.draw();
+			Iterator <Bomb> it;
+			Bomb b;
+			
 			while(true){
 				left = false;
 				right = false;
 				up = false;
-				down = false;		
+				down = false;
+				bomb = false;
+				boolean explodiert=false;	//ist eine Bombe in einer Iteration explodiert?
 				try{
 					Thread.sleep(10);
 				}
 				catch(Exception e){
+				}
+				
+				//Bomben explodieren
+				synchronized (map0.bombs) {
+					//durchläuft alle Bomben in der Liste
+					it = map0.bombs.iterator();	
+					while (it.hasNext()) {
+						b = it.next();
+						if (b.getTimePlaced()+b.getTimer() <= System.currentTimeMillis()) {		//Zeit abgelaufen?
+							explodiert = true;
+							b.explosion();			//explodieren	
+							it.remove();			//Bombe aus der Liste entfernen
+						}
+					}
+					
+					//durchläuft alle Bomben in der Liste
+					while (explodiert) {
+						explodiert = false;
+						it = map0.bombs.iterator();
+						while (it.hasNext()) {
+							b = it.next();
+							if (b.getReady()) {			//Bombe soll explodieren?
+								explodiert = true;
+								b.explosion();			//explodieren	
+								it.remove();			//Bombe aus der Liste entfernen
+							}
+						}
+					}
+				}
+				//Bombe wird gelegt
+				if(bomb==true){
+					if (map0.getType(mini.getX(), mini.getY()) != 1) {		//es darf keine Bombe auf dem Feld liegen
+						map0.setType(1,mini.getX(),mini.getY());
+						b = new Bomb(mini,map0);
+						synchronized (map0.bombs) {
+							map0.bombs.add(b);
+						}
+					}
 				}
 				if(up==true){
 					mini.move(1);
@@ -93,9 +146,12 @@ public class Bomberman extends JFrame{
 		Map1.generateExit();
 		Minion Spieler1 = new Minion(1,0,0,Map1);
 
+
+		
 		new Bomberman(Map1);
 		Thread Player1 = new Thread(new Bomberman.Bomber(Spieler1));
 		Player1.start();
+
 		//addPlayer(Spieler);
 		//---------------------------------------Ende
 	}

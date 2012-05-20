@@ -1,3 +1,7 @@
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 /**************************************
  * 
  * 0 Freies Feld
@@ -14,6 +18,7 @@ public class Map{
 	private final int minSize = 5;
 	private final int maxSize = 15;
 	private int[][] fields;
+	public List<Bomb> bombs = new ArrayList<Bomb>();		//Liste aller Bomben
 	// Konstruktor
 	public Map (int s){
 		if(s<this.minSize) this.size = this.minSize;
@@ -43,9 +48,13 @@ public class Map{
 		}
 	}
 	public void draw(int x, int y){
-		if(fields[x][y]==0 || fields[x][y] == 1){
+		if(fields[x][y]==0){
 			StdDraw.setPenColor(StdDraw.CYAN);
 			StdDraw.filledSquare(((2.0*x+1)/(2.0*this.getSize())),(2.0*y+1)/(2.0*this.getSize()),0.5/this.getSize());
+		}
+		if(fields[x][y]==1){
+			StdDraw.setPenColor(StdDraw.BLACK);
+			StdDraw.filledCircle(((2.0*x+1)/(2.0*this.getSize())),(2.0*y+1)/(2.0*this.getSize()),0.5/this.getSize());
 		}
 		if(fields[x][y]==2){
 			StdDraw.setPenColor(StdDraw.ORANGE);
@@ -73,6 +82,23 @@ public class Map{
 	public int getMinSize(){
 		return this.minSize;
 	}
+	
+	//gibt die Bombe an der Stelle x,y zurück, falls diese existiert
+	//null sonst
+	public Bomb getBomb(int x, int y){
+		synchronized (bombs) {
+		Iterator<Bomb> it = bombs.iterator();
+		Bomb b;
+		while (it.hasNext()) {
+			b = it.next();
+			System.out.println(b.getX() + ", " + b.getY());
+			if (b.getX() == x && b.getY() == y){
+				return b;
+			}
+		}
+		return null;		//Bombe nicht gefunden
+		}
+	}
 	// Destroy
 	public void destroy(int x, int y){
 		if(this.fields[x][y]==1){
@@ -84,7 +110,7 @@ public class Map{
 	}
 	// Bearbeitungsmethoden
 	public void setType(int t, int x, int y){
-		if((t>1 && t<5) || t==0){
+		if(t>=0 && t<5){		//Änderung: Auch Bomben können hier jetzt gelegt werden (t>1 -> t>=0)
 			try{
 				fields[x][y] = t;
 			}
