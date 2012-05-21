@@ -603,7 +603,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
     *************************************************************************/
 
     // get an image from the given filename
-    private static Image getImage(String filename) {
+     private static Image getImage(String filename) {
 
         // to read from file
         ImageIcon icon = new ImageIcon(filename);

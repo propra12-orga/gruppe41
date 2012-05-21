@@ -55,6 +55,9 @@ public class Map{
 		if(fields[x][y]==1){
 			StdDraw.setPenColor(StdDraw.BLACK);
 			StdDraw.filledCircle(((2.0*x+1)/(2.0*this.getSize())),(2.0*y+1)/(2.0*this.getSize()),0.5/this.getSize());
+		
+			//StdDraw.picture(((2.0*x+1)/(2.0*this.getSize())),(2.0*y+1)/(2.0*this.getSize()),"src/bilder/bombeklein.jpg");
+			
 		}
 		if(fields[x][y]==2){
 			StdDraw.setPenColor(StdDraw.ORANGE);

@@ -30,8 +30,8 @@ import java.awt.Color;
 
 public class Start extends JFrame {
 
-	
-	
+	Map map0;														// das hier weg machen wenn wir das nicht so machen wollen:) ist halt gar nicht ausgereift.
+	Bomberman bomber=new Bomberman(map0);
 	
 	/*Dieses Menu enthält viele Optionen, die zwar Änderungen annehmen und diese speichert, damit sie, beim Start des Spieles
 	 *  als Paramter weitergegeben werden können, haben aber magels Implemetierung eines geeigneten Konstruktors noch keine
@@ -650,6 +650,7 @@ public class Start extends JFrame {
 		JButton Einzel = new JButton("SingelPlayer");
 		Einzel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				bomber.spiele(10);											// hier starten es beim Singelplayer-Modus 
 				CardLayout cl = (CardLayout) (contentPane.getLayout());
 				String card = "8";
 				cl.show(contentPane, card);

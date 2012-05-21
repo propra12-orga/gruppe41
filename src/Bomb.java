@@ -17,6 +17,7 @@ public class Bomb {
 	private int Y;
 	private long timer;
 	private long timePlaced;
+	private int bomben;
 	private int strength;
 	private boolean ready;			//soll explodieren, falls ready = true
 //	public static boolean layBomb = false;
@@ -219,5 +220,8 @@ public class Bomb {
 	}
 	public long getTimer(){
 		return timer;
+	}
+	public int getBomben(){
+		return bomben;
 	}
 }

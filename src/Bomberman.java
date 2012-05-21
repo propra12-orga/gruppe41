@@ -138,8 +138,8 @@ public class Bomberman extends JFrame{
 		}
 	}
 		
-	public static void main(String[] args) {
-		int i = 8;
+	public void spiele(int i) {                                                  //hier eigentlich main methode 
+		
 		Map Map1 = new Map(i);
 		Map1.cleanMap();
 		Map1.generateBlocks();
