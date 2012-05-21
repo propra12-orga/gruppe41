@@ -8,6 +8,53 @@ import java.awt.event.KeyAdapter;
 import java.lang.Thread;
 import java.util.ArrayList;
 
+
+final class pfeil extends KeyAdapter{
+	public void keyPressed(KeyEvent e){
+		if(e.getKeyCode() == KeyEvent.VK_UP){
+			Bomberman.up = true;
+		}
+		if(e.getKeyCode() == KeyEvent.VK_RIGHT){
+			Bomberman.right = true;
+		}
+		if(e.getKeyCode() == KeyEvent.VK_DOWN){
+			Bomberman.down = true;
+		}
+		if(e.getKeyCode() == KeyEvent.VK_LEFT){
+			Bomberman.left = true;
+		}
+		if(e.getKeyCode() == KeyEvent.VK_NUMPAD0){
+			Bomberman.bomb = true;
+		}
+		if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
+			System.exit(0);
+		}
+	}
+}
+
+final class wasd extends KeyAdapter{
+	public void keyPressed(KeyEvent e){
+		if(e.getKeyCode() == KeyEvent.VK_W){
+			Bomberman.up = true;
+		}
+		if(e.getKeyCode() == KeyEvent.VK_D){
+			Bomberman.right = true;
+		}
+		if(e.getKeyCode() == KeyEvent.VK_S){
+			Bomberman.down = true;
+		}
+		if(e.getKeyCode() == KeyEvent.VK_A){
+			Bomberman.left = true;
+		}
+		if(e.getKeyCode() == KeyEvent.VK_SPACE){
+			Bomberman.bomb = true;
+		}
+		if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
+			System.exit(0);
+		}
+	}
+}
+
 public class Bomberman extends JFrame{
 
 	public static Map map0;
@@ -18,7 +65,7 @@ public class Bomberman extends JFrame{
 	public static boolean bomb = false;
 	
 	
-	public Bomberman(Map ma){
+	public Bomberman(Map ma, int steuerung){
 		super("MasterBomb!");
 		this.map0 = ma;
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -26,31 +73,11 @@ public class Bomberman extends JFrame{
 		setSize(400,300);
 		setLocation(100,100);
 		setVisible(true);
-		addKeyListener(new MyKeyListener());
+		if(steuerung==1){addKeyListener(new pfeil());};
+		if(steuerung==0){addKeyListener(new wasd());};
 	}
 	
-	private class MyKeyListener extends KeyAdapter{
-		public void keyPressed(KeyEvent e){
-			if(e.getKeyCode() == KeyEvent.VK_UP){
-				Bomberman.up = true;
-			}
-			if(e.getKeyCode() == KeyEvent.VK_RIGHT){
-				Bomberman.right = true;
-			}
-			if(e.getKeyCode() == KeyEvent.VK_DOWN){
-				Bomberman.down = true;
-			}
-			if(e.getKeyCode() == KeyEvent.VK_LEFT){
-				Bomberman.left = true;
-			}
-			if(e.getKeyCode() == KeyEvent.VK_SPACE){
-				Bomberman.bomb = true;
-			}
-			if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
-				System.exit(0);
-			}
-		}
-	}
+	
 	public static class Bomber implements Runnable{
 		private Minion mini;
 		
@@ -138,7 +165,7 @@ public class Bomberman extends JFrame{
 		}
 	}
 		
-	public void spiele(int i) {                                                  //hier eigentlich main methode 
+	public void spiele(int i,int steuerung) {                                                  //hier eigentlich main methode 
 		
 		Map Map1 = new Map(i);
 		Map1.cleanMap();
@@ -148,7 +175,7 @@ public class Bomberman extends JFrame{
 
 
 		
-		new Bomberman(Map1);
+		new Bomberman(Map1,steuerung);
 		Thread Player1 = new Thread(new Bomberman.Bomber(Spieler1));
 		Player1.start();
 
