@@ -82,10 +82,16 @@ public class Minion{
 				System.out.println("Sie haben ihr Ziel erreicht!");
 				try{
 					Thread.sleep(500);
+					
 				}
 				catch(Exception e){
 				}
-				System.exit(0);
+
+				Map1.draw();
+			this.X=0;
+			this.Y=0;
+			draw();
+				
 			}
 		}
 		else{
