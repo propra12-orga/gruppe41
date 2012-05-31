@@ -1,0 +1,16 @@
+
+Allgemein:
+
+ wichtig:
+ * Mapauswahl bei Battle-Game
+ * Dokumentation per Javadoc
+ 
+ auch wichtig:
+ * evtl. (weitere) Sounds
+ * Paletten für Spieler hinzufügen
+ * bessere Bilder für Explosionen
+ * Pause- und End-Menu verschönern
+
+ danach:
+ * Monster, Bots, etc.
+ * Netzwerkmodus

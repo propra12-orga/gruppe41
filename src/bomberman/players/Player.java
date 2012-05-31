@@ -1,6 +1,7 @@
 package bomberman.players;
 
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +14,7 @@ import bomberman.input.Input;
 import bomberman.map.Map;
 import bomberman.map.MapObject;
 import bomberman.objects.Mob;
+import bomberman.objects.Moveable;
 import bomberman.objects.bomb.Bomb;
 import bomberman.sound.Sound;
 
@@ -30,11 +32,11 @@ public class Player extends Mob
 	public int				bombs			= 1;
 	public int				strength		= 1;
 	public boolean			canKickBombs	= false;
-	public boolean			hasreachedexit	= false;
+	public boolean			hasReachedExit	= false;
 
 	public int				player_id;
 
-	private Animation		player_front, player_back, player_right, player_left;
+	private Animation[]		ani				= new Animation[4];
 
 	public Player(Input input, Map map, int tile_x, int tile_y, int player)
 	{
@@ -44,16 +46,16 @@ public class Player extends Mob
 		this.controls = Game.controls[player];
 		this.player_id = player;
 
-		this.movement_speed++;
-
 		try
 		{
 			BufferedImage temp = ImageIO.read(new File("data/sprites/player_" + player + ".png"));
 
-			player_front = new Animation(temp, 0, 0, WIDTH, HEIGHT, 8, 150, false, 2);
-			player_back = new Animation(temp, 0, 1, WIDTH, HEIGHT, 8, 150, false, 2);
-			player_left = new Animation(temp, 0, 2, WIDTH, HEIGHT, 8, 150, false, 2);
-			player_right = new Animation(temp, 0, 3, WIDTH, HEIGHT, 8, 150, false, 2);
+			img = temp.getSubimage(0, 0, WIDTH, 4 * HEIGHT);
+
+			for (int i = 0; i < 4; i++)
+			{
+				ani[i] = new Animation(temp, 1, i, WIDTH, HEIGHT, 10, 125, false);
+			}
 		}
 		catch (IOException e)
 		{
@@ -63,16 +65,23 @@ public class Player extends Mob
 		OnSpawn();
 	}
 
+	public void increaseSpeed(int n)
+	{
+		if (movement_speed + n < 1 || movement_speed + n > 3)
+			return;
+
+		this.movement_speed += n;
+
+		for (int i = 0; i < 4; i++)
+		{
+			ani[i].interval = 150 - (25 * movement_speed);
+		}
+	}
+
 	public void Update()
 	{
-		if (dir == FACE_DIRECTION_DOWN)
-			player_front.Update();
-		else if (dir == FACE_DIRECTION_UP)
-			player_back.Update();
-		else if (dir == FACE_DIRECTION_LEFT)
-			player_left.Update();
-		else
-			player_right.Update();
+		if (moving)
+			ani[dir].Update();
 
 		int xa = 0, ya = 0;
 
@@ -81,8 +90,8 @@ public class Player extends Mob
 		if (input.keys[controls[2]].down) xa--;
 		if (input.keys[controls[3]].down) xa++;
 
-		int dir = Move(xa, ya);
-		if (dir != Mob.FACE_DIRECTION_NONE)
+		int dir = Move(xa, ya)[0];
+		if (dir != FACE_DIRECTION_NONE)
 		{
 			this.dir = dir;
 			startMoving();
@@ -92,69 +101,47 @@ public class Player extends Mob
 
 		if (input.keys[controls[4]].down)
 			plantBomb();
-	}
 
-	public void startMoving()
-	{
-		if (!moving)
-		{
-			player_front.Reset();
-			player_back.Reset();
-			player_left.Reset();
-			player_right.Reset();
-		}
-		moving = true;
-	}
+		if (input.keys[KeyEvent.VK_F1].clicked)
+			x--;
+		if (input.keys[KeyEvent.VK_F2].clicked)
+			y--;
 
-	public void stopMoving()
-	{
-		moving = false;
 	}
 
 	public void Render(Graphics2D g)
 	{
 		if (!moving)
 		{
-			if (dir == FACE_DIRECTION_DOWN)
-				img = player_front.sheet;
-			else if (dir == FACE_DIRECTION_UP)
-				img = player_back.sheet;
-			else if (dir == FACE_DIRECTION_LEFT)
-				img = player_left.sheet;
-			else
-				img = player_right.sheet;
-
 			g.drawImage(img,
 						x,
 						y + Map.TILE_SIZE - HEIGHT - 1,
 						x + Map.TILE_SIZE,
 						y + Map.TILE_SIZE - 1,
 						0,
-						0,
+						dir * HEIGHT,
 						WIDTH,
-						HEIGHT,
+						dir * HEIGHT + HEIGHT,
 						null);
 		}
 		else
-		{
-			Animation img;
+			ani[dir].Render(g, x, y + Map.TILE_SIZE - HEIGHT - 1);
+	}
 
-			if (dir == FACE_DIRECTION_DOWN)
-				img = player_front;
-			else if (dir == FACE_DIRECTION_UP)
-				img = player_back;
-			else if (dir == FACE_DIRECTION_LEFT)
-				img = player_left;
-			else
-				img = player_right;
+	public void startMoving()
+	{
+		moving = true;
+	}
 
-			img.Render(g, x, y + Map.TILE_SIZE - HEIGHT - 1);
-		}
+	public void stopMoving()
+	{
+		moving = false;
+		ani[dir].Reset();
 	}
 
 	public void plantBomb()
 	{
-		if (bombs < 1 || System.currentTimeMillis() - plantTimer < 250)
+		if (bombs < 1 || System.currentTimeMillis() - plantTimer < 200)
 			return;
 
 		plantTimer = System.currentTimeMillis();
@@ -171,19 +158,27 @@ public class Player extends Mob
 		Sound.plantBomb.play();
 	}
 
+	public boolean isBlocking(Moveable m)
+	{
+		if (m instanceof Bomb && !((Bomb) m).isExploding)
+			return true;
+		else
+			return false;
+	}
+
 	public void OnSpawn()
 	{
 		map.num_of_players++;
 	}
 
-	public void OnDeath()
+	public void Die()
 	{
-		super.OnDeath();
+		super.Die();
 		map.num_of_players--;
 	}
 
 	public void OnHurt()
 	{
-		OnDeath();
+		Die();
 	}
 }

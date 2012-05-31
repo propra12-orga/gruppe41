@@ -31,7 +31,7 @@ public class Bomberman
 
 			if (timerdiff > MS_PER_FRAME)
 			{
-				for (int i = 0; i < ((System.currentTimeMillis() - timer1) / MS_PER_FRAME); i++)
+				for (int i = 0; i < timerdiff / MS_PER_FRAME; i++)
 				{
 					game.Update();
 					ticks++;

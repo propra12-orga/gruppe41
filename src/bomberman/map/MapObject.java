@@ -5,10 +5,6 @@ import java.awt.image.BufferedImage;
 
 import bomberman.objects.Mob;
 import bomberman.objects.Moveable;
-import bomberman.objects.terrain.Rock;
-import bomberman.players.Player;
-import bomberman.powerups.Kickup;
-import bomberman.powerups.Powerup;
 
 public abstract class MapObject
 {
@@ -22,18 +18,14 @@ public abstract class MapObject
 
 	public int				x, y, width, height, render_priority;
 	public long				creationTime;
-	public boolean			vulnerable, blocking, ignoring;
 	
 	public BufferedImage	img;
 	protected Map			map;
 
-	public MapObject(Map map, int tile_x, int tile_y, boolean vulnerable, boolean blocking, boolean ignoring)
+	public MapObject(Map map, int tile_x, int tile_y)
 	{
 		this.x = map.getXByTile(tile_x);
 		this.y = map.getYByTile(tile_y);
-		this.vulnerable = vulnerable;
-		this.blocking = blocking;
-		this.ignoring = ignoring;
 		this.map = map;
 		this.width = WIDTH;
 		this.height = HEIGHT;
@@ -45,24 +37,7 @@ public abstract class MapObject
 	{
 
 	}
-
-	public void OnTouch(Moveable m, int side)
-	{
-
-	}
-
-	public void OnHurt()
-	{
-		OnDeath();
-	}
-
-	public void OnDeath()
-	{
-		map.Remove(this);
-	}
-		
 	
-
 	public void draw(Graphics2D g, int sprite_x, int sprite_y)
 	{
 		draw(g, x, y, sprite_x, sprite_y);
@@ -95,5 +70,30 @@ public abstract class MapObject
 	public int getYTile()
 	{
 		return map.getTileByY(y + (height / 2));
+	}
+	
+	public boolean isBlocking(Moveable m)
+	{
+		return false;
+	}
+
+	public void OnTouch(Moveable m, int side)
+	{
+
+	}
+	
+	public void OnCollide(Moveable m, int side)
+	{
+
+	}
+
+	public void OnHurt()
+	{
+		
+	}
+
+	public void Die()
+	{
+		map.Remove(this);
 	}
 }

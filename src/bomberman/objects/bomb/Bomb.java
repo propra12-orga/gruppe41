@@ -10,9 +10,7 @@ import bomberman.animation.Animation;
 import bomberman.map.Map;
 import bomberman.map.MapObject;
 import bomberman.objects.Moveable;
-import bomberman.objects.terrain.Rock;
 import bomberman.players.Player;
-import bomberman.powerups.*;
 import bomberman.sound.Sound;
 
 public class Bomb extends Moveable
@@ -20,7 +18,8 @@ public class Bomb extends Moveable
 	private Player		player;
 
 	public int			seconds;
-	public int			strength;
+	public int			radius;
+	public boolean		isExploding;
 
 	private boolean		moving	= false;
 	private int			move_x, move_y;
@@ -29,7 +28,7 @@ public class Bomb extends Moveable
 
 	public Bomb(Player player, Map map, int tile_x, int tile_y)
 	{
-		super(map, tile_x, tile_y, true, true, false);
+		super(map, tile_x, tile_y);
 
 		this.player = player;
 		this.movement_speed += 2;
@@ -46,6 +45,72 @@ public class Bomb extends Moveable
 		OnSpawn();
 	}
 
+	public void Update()
+	{
+		img.Update();
+
+		if (moving)
+		{
+			if (Move(move_x, move_y)[1] == 0)
+			{
+				moving = false;
+				move_y = 0;
+				move_x = 0;
+			}
+		}
+
+		int radius = this.radius + 1;
+
+		if (System.currentTimeMillis() - creationTime > seconds * 1000)
+		{
+			int tile_x = getXTile(), tile_y = getYTile();
+
+			isExploding = true;
+
+			explode(tile_x, tile_y);
+			map.Add(new Flame(map, tile_x, tile_y, Flame.FLAMES_CENTER));
+
+			for (int xx = tile_x - 1; xx > tile_x - radius; xx--)
+			{
+				if (!explode(xx, tile_y))
+					break;
+				else
+					map.Add(new Flame(map, xx, tile_y, (xx > tile_x - radius + 1) ? Flame.FLAMES_HORIZONTAL : Flame.FLAMES_LEFT_EDGE));
+			}
+
+			for (int xx = tile_x + 1; xx < tile_x + radius; xx++)
+			{
+				if (!explode(xx, tile_y))
+					break;
+				else
+					map.Add(new Flame(map, xx, tile_y, (xx < tile_x + radius - 1) ? Flame.FLAMES_HORIZONTAL : Flame.FLAMES_RIGHT_EDGE));
+			}
+
+			for (int yy = tile_y - 1; yy > tile_y - radius; yy--)
+			{
+				if (!explode(tile_x, yy))
+					break;
+				else
+					map.Add(new Flame(map, tile_x, yy, (yy > tile_y - radius + 1) ? Flame.FLAMES_VERTICAL : Flame.FLAMES_TOP_EDGE));
+			}
+
+			for (int yy = tile_y + 1; yy < tile_y + radius; yy++)
+			{
+				if (!explode(tile_x, yy))
+					break;
+				else
+					map.Add(new Flame(map, tile_x, yy, (yy < tile_y + radius - 1) ? Flame.FLAMES_VERTICAL : Flame.FLAMES_BOT_EDGE));
+			}
+
+			Die();
+		}
+	}
+
+	public void Render(Graphics2D g)
+	{
+		img.Render(g, x, y);
+	}
+
 	private boolean explode(int tile_x, int tile_y)
 	{
 		if (tile_x < 0 || tile_x > Map.TILES_COUNT_X - 1 || tile_y < 0 || tile_y > Map.TILES_COUNT_Y - 1)
@@ -58,88 +123,17 @@ public class Bomb extends Moveable
 		{
 			if (o == this)
 				continue;
-			if (o.vulnerable){
-				if (o instanceof Rock)
-				{
-				o.OnHurt();
-				double test=Math.random();
-				if(test<0.2&&test>0.1)
-				{
-				map.Add(new Kickup(map,tile_x,tile_y));
-				}
-				if(test<0.6&&test>0.4)
-				{
-				map.Add(new Bombup(map,tile_x,tile_y));
-				}
-				if(test<0.3&&test>0.2)
-				{
-				map.Add(new Speedup(map,tile_x,tile_y));
-				}
-				}
-				o.OnHurt();}
-			if (o.blocking)
+			if (o.isBlocking(this))
 				ret = false;
+			o.OnHurt();
 		}
 
 		return ret;
 	}
 
-	public void Update()
+	public boolean isBlocking(Moveable m)
 	{
-		img.Update();
-
-		if (moving)
-		{
-			Move(move_x, move_y);
-		}
-
-		int strength = this.strength + 1;
-
-		if (System.currentTimeMillis() - creationTime > seconds * 1000)
-		{
-			explode(getXTile(), getYTile());
-			map.Add(new Flame(map, getXTile(), getYTile(), Flame.FLAMES_CENTER));
-
-			for (int xx = getXTile() - 1; xx > getXTile() - strength; xx--)
-			{
-				if (!explode(xx, getYTile()))
-					break;
-				else
-					map.Add(new Flame(map, xx, getYTile(), (xx > getXTile() - strength + 1) ? Flame.FLAMES_HORIZONTAL : Flame.FLAMES_LEFT_EDGE));
-			}
-
-			for (int xx = getXTile() + 1; xx < getXTile() + strength; xx++)
-			{
-				if (!explode(xx, getYTile()))
-					break;
-				else
-					map.Add(new Flame(map, xx, getYTile(), (xx < getXTile() + strength - 1) ? Flame.FLAMES_HORIZONTAL : Flame.FLAMES_RIGHT_EDGE));
-			}
-
-			for (int yy = getYTile() - 1; yy > getYTile() - strength; yy--)
-			{
-				if (!explode(getXTile(), yy))
-					break;
-				else
-					map.Add(new Flame(map, getXTile(), yy, (yy > getYTile() - strength + 1) ? Flame.FLAMES_VERTICAL : Flame.FLAMES_TOP_EDGE));
-			}
-
-			for (int yy = getYTile() + 1; yy < getYTile() + strength; yy++)
-			{
-				if (!explode(getXTile(), yy))
-					break;
-				else
-					map.Add(new Flame(map, getXTile(), yy, (yy < getYTile() + strength - 1) ? Flame.FLAMES_VERTICAL : Flame.FLAMES_BOT_EDGE));
-			}
-
-			OnDeath();
-		}
-	}
-
-	public void Render(Graphics2D g)
-	{
-		img.Render(g, x, y);
-		g.drawString(String.valueOf(seconds - (System.currentTimeMillis() - creationTime) / 1000), x, y);
+		return true;
 	}
 
 	public void OnHurt()
@@ -150,19 +144,19 @@ public class Bomb extends Moveable
 	public void OnSpawn()
 	{
 		this.seconds = 3;
-		this.strength = player.strength;
+		this.radius = player.strength;
 	}
 
-	public void OnDeath()
+	public void Die()
 	{
-		super.OnDeath();
 		this.player.bombs++;
 		Sound.explosion.play();
+		super.Die();
 	}
 
-	public void OnTouch(Moveable m, int side)
+	public void OnCollide(Moveable m, int side)
 	{
-		if (moving || !((Player) m).canKickBombs)
+		if (moving || (m instanceof Player && !((Player) m).canKickBombs))
 			return;
 
 		this.moving = true;

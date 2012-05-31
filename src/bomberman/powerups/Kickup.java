@@ -18,7 +18,7 @@ public class Kickup extends Powerup
 
 		try
 		{
-			img = new Animation(ImageIO.read(new File("data/sprites/kickup.png")), 0, 0, WIDTH, HEIGHT, 2, 300, false, 1);
+			img = new Animation(ImageIO.read(new File("data/sprites/kickup.png")), 0, 0, WIDTH, HEIGHT, ANI_COUNT, ANI_INTERVAL, false);
 		}
 		catch (IOException e)
 		{
@@ -31,7 +31,7 @@ public class Kickup extends Powerup
 		if (m instanceof Player)
 		{
 			((Player) m).canKickBombs = true;
-			OnHurt();
+			pickedUp();
 		}
 	}
 }

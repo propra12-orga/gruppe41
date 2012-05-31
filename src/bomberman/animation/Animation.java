@@ -11,9 +11,8 @@ public class Animation
 	private long			timer;
 
 	public Animation(BufferedImage sheet, int sprite_x, int sprite_y, int width, int height, int num_of_sprites, int interval, boolean back_and_forth, int start)
-	{
-		int x = sprite_x * width, y = sprite_y * height;		
-		this.sheet = sheet.getSubimage(x, y, width * num_of_sprites, height);
+	{	
+		this.sheet = sheet.getSubimage(sprite_x * width, sprite_y * height, width * num_of_sprites, height);
 		this.width = width;
 		this.height = height;
 		this.num = num_of_sprites;

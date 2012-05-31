@@ -23,7 +23,7 @@ public class Flame extends MapObject
 
 	public Flame(Map map, int tile_x, int tile_y, int type)
 	{
-		super(map, tile_x, tile_y, false, false, true);
+		super(map, tile_x, tile_y);
 
 		try
 		{
@@ -39,7 +39,7 @@ public class Flame extends MapObject
 	{
 		if (System.currentTimeMillis() - creationTime > STAYTIME)
 		{
-			OnDeath();
+			Die();
 		}
 	}
 

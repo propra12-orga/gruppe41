@@ -4,98 +4,55 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import bomberman.core.CoreGame;
 import bomberman.game.Game;
 import bomberman.input.Input;
-
-
 
 public class Menu
 {
 	private static final int		TITLE_SCREEN		= 0;
-	private static final int		SETTINGS_SCREEN		= 1;
-	private static final int		KEYBOARD_SETTINGS	= 2;
-	private static final int		HIGHSCORE_SCREEN	= 3;
-	private static final int		GRAPHIC_SCREEN		= 4;
-	private static final int		FIGURE_SELECTION	= 5;
-	private static final int		MAP_SELECTION		= 6;
-	private static final int		GAME_SELECTION		= 7;
+	private static final int		GAME_SCREEN			= 1;
+	private static final int		BATTLE_SCREEN		= 2;
+	private static final int		SETTINGS_SCREEN		= 3;
+	private static final int		KEYBOARD_SETTINGS	= 4;
 
-	
-	//highscore-liste
-	
-	private String erster="";
-	private String zweiter="";
-	private String dritter="";
-	private String ersterpunkte="";
-	private String zweiterpunkte="";
-	private String dritterpunkte="";
-	private String spielername="";
-	
-	
 	private Game					game;
 	private Input					input;
 
 	private BufferedImage			title, logo;
 
-	BufferedReader br = null;
-	
 	private static final String[][]	items				= {
-														{ "Start  Game", "Highscore", "Settings", "Exit" },
-														{ "Player ", "Graphics" ,"Back" },
-														{ "Up", "Down", "Left", "Right", "Action", "", "Back" },
-														{ "Back" },
-														{"Figuredesign", "Mapdesign","Back"},
-														{},
-														{},
-														{"Singelplayer","Multiplayer","Back"}
+														{ "Start  Game", "Settings", "Exit" },
+														{ "Singleplayer", "Battle Game", "", "Back" },
+														{ "Player 1   ", "Player 2   ", "Player 3   ", "Player 4   " },
+														{ "Player ", "Back" },
+														{ "Up", "Down", "Left", "Right", "Action", "", "O.K." }
 														};
+
+	private static final int[][]	left_right_choice	= {
+														{ BATTLE_SCREEN, 0 },
+														{ BATTLE_SCREEN, 1 },
+														{ BATTLE_SCREEN, 2 },
+														{ BATTLE_SCREEN, 3 },
+														{ SETTINGS_SCREEN, 0 }
+														};
+
+	private static boolean[]		players;
 
 	private int						selected			= 0, count = items[0].length, menu = 0, player_sel = 1;
 	private boolean					wait_for_key		= false;
-	
-	{try {
-        br = new BufferedReader(new FileReader(new File("besten.txt")));
-        String line = null;
-        while((line = br.readLine()) != null) {               
-            String []parts= line.split(";");
-            erster=parts[0];
-            ersterpunkte=parts[1];
-            zweiter=parts[2];
-            zweiterpunkte=parts[3];
-            dritter=parts[4];
-            dritterpunkte=parts[5];
-            spielername=parts[6];
-           
-        }
-    } catch(FileNotFoundException f) {
-        f.printStackTrace();
-    } catch(IOException f) {
-        f.printStackTrace();
-    } finally {
-        if(br != null) {
-            try {
-                br.close();
-            } catch(IOException f) {
-                f.printStackTrace();
-            }
-        }
-    }}
-
-
+	private long					blink_timer;
+	private char					blink_char, blink_chars[] = { '/', '-', '\\', '|' };
 
 	public Menu(Game game, Input input)
 	{
 		this.game = game;
 		this.input = input;
-		//System.out.println(spielername);
 
 		try
 		{
@@ -117,7 +74,14 @@ public class Menu
 
 	public void Update()
 	{
-		if (menu == SETTINGS_SCREEN)
+		if (menu == BATTLE_SCREEN)
+		{
+			if (input.keys[KeyEvent.VK_RIGHT].clicked)
+				players[selected] = true;
+			else if (input.keys[KeyEvent.VK_LEFT].clicked)
+				players[selected] = false;
+		}
+		else if (menu == SETTINGS_SCREEN)
 		{
 			if (selected == 0)
 			{
@@ -180,19 +144,35 @@ public class Menu
 					switch (selected)
 					{
 						case 0:
-							Change(GAME_SELECTION);
-							//game.startCoreGame();
+							Change(GAME_SCREEN);
 							break;
 						case 1:
-							Change(HIGHSCORE_SCREEN);
-							break;
-						case 2:
 							Change(SETTINGS_SCREEN);
 							break;
-						case 3:
+						case 2:
 							System.exit(0);
 							break;
 					}
+					break;
+				case GAME_SCREEN:
+					switch (selected)
+					{
+						case 0:
+							game.startCoreGame(CoreGame.NORMAL_GAME, null);
+							Change(TITLE_SCREEN);
+							break;
+						case 1:
+							players = new boolean[] { true, true, false, false };
+							Change(BATTLE_SCREEN);
+							break;
+						case 3:
+							Change(TITLE_SCREEN);
+							break;
+					}
+					break;
+				case BATTLE_SCREEN:
+					game.startCoreGame(CoreGame.BATTLE_GAME, players);
+					Change(TITLE_SCREEN);
 					break;
 				case SETTINGS_SCREEN:
 					switch (selected)
@@ -201,60 +181,24 @@ public class Menu
 							Change(KEYBOARD_SETTINGS);
 							break;
 						case 1:
-							Change(GRAPHIC_SCREEN);
-							break;
-						case 2:
 							Change(TITLE_SCREEN);
+							player_sel = 1;
 							break;
 					}
 					break;
 				case KEYBOARD_SETTINGS:
 					switch (selected)
 					{
-						case 5:				// warum ist hier 5 und nicht 0?
+						case 5:
 							break;
-						case 6:				// warum 6?
+						case 6:
 							Change(SETTINGS_SCREEN);
 							break;
 						default:
 							wait_for_key = true;
+							blink_timer = System.currentTimeMillis();
+							blink_char = blink_chars[0];
 							break;
-					}
-					break;
-				case HIGHSCORE_SCREEN:
-					switch (selected)
-					{
-						case 0:
-							Change(TITLE_SCREEN);
-							break;
-					}
-					break;
-				case GRAPHIC_SCREEN:
-					switch (selected)
-					{
-						case 0:
-							//Change (SETTINGS_SCREEN);
-							break;
-						case 1:
-							//Change (SETTINGS_SCREEN);
-							break;
-						case 2:
-							Change (SETTINGS_SCREEN);
-							break;
-					}
-					break;
-				case GAME_SELECTION:
-					switch (selected)
-					{
-						case 0:
-							game.startCoreGame();
-							break;
-						case 1:
-							break;
-						case 2:
-							Change (TITLE_SCREEN);
-							break;
-							
 					}
 					break;
 			}
@@ -266,20 +210,18 @@ public class Menu
 				case TITLE_SCREEN:
 					System.exit(0);
 					break;
+				case GAME_SCREEN:
+					Change(TITLE_SCREEN);
+					break;
+				case BATTLE_SCREEN:
+					Change(GAME_SCREEN);
+					break;
 				case SETTINGS_SCREEN:
 					Change(TITLE_SCREEN);
+					player_sel = 1;
 					break;
 				case KEYBOARD_SETTINGS:
 					Change(SETTINGS_SCREEN);
-					break;
-				case HIGHSCORE_SCREEN:
-					Change (TITLE_SCREEN);
-					break;
-				case GRAPHIC_SCREEN:
-					Change(SETTINGS_SCREEN);
-					break;
-				case GAME_SELECTION:
-					Change(TITLE_SCREEN);
 					break;
 			}
 		}
@@ -287,17 +229,18 @@ public class Menu
 
 	public void Render(Graphics2D g)
 	{
-		
-		
 		String[] strs = new String[items[menu].length];
 		String len = "";
 
-		
 		for (int i = 0; i < items[menu].length; i++)
 		{
 			String s = items[menu][i];
 
-			if (menu == SETTINGS_SCREEN)
+			if (menu == BATTLE_SCREEN)
+			{
+				s += (players[i] ? "On" : "Off");
+			}
+			else if (menu == SETTINGS_SCREEN)
 			{
 				if (s == items[SETTINGS_SCREEN][0])
 					s += player_sel + " Keys";
@@ -307,23 +250,21 @@ public class Menu
 				if (i < 5)
 				{
 					if (wait_for_key && i == selected)
-						s = "-";
+					{
+						if (System.currentTimeMillis() - blink_timer > 100)
+						{
+							blink_timer = System.currentTimeMillis();
+							int p = new String(blink_chars).indexOf(blink_char);
+							blink_char = (p + 1 == blink_chars.length) ? blink_chars[0] : blink_chars[p + 1];
+						}
+						s = String.valueOf(blink_char);
+					}
 					else
-						s = Input.KEYS[Game.controls[player_sel - 1][i]];
+					{
+						String k = Input.KEYS[Game.controls[player_sel - 1][i]];
+						s = k != "" ? k : String.format("0x%02X", Game.controls[player_sel - 1][i]);
+					}
 				}
-			}
-			else if (menu==HIGHSCORE_SCREEN){
-				g.setColor(Color.gray);
-				g.drawString("Spielername", game.getWidth()*7/24, game.getHeight()*11/27);
-				g.drawString("Punkte", game.getWidth()*4/6, game.getHeight()*11/27);
-				g.setColor(Color.gray);
-				g.drawString(erster, game.getWidth()*7/24, game.getHeight()*13/27);
-				g.drawString(zweiter, game.getWidth()*7/24, game.getHeight()*14/27);
-				g.drawString(dritter, game.getWidth()*7/24, game.getHeight()*15/27);
-				g.drawString(ersterpunkte, game.getWidth()*4/6, game.getHeight()*13/27);
-				g.drawString(zweiterpunkte, game.getWidth()*4/6, game.getHeight()*14/27);
-				g.drawString(dritterpunkte, game.getWidth()*4/6, game.getHeight()*15/27);
-			
 			}
 
 			if (s.length() > len.length()) len = s;
@@ -332,33 +273,28 @@ public class Menu
 
 		for (int i = 0; i < strs.length; i++)
 		{
-			if(menu==HIGHSCORE_SCREEN){
-				String msg = strs[i];
-				int y = (Game.HEIGHT *2 / 3) - strs.length * 4 + i * 24;
-				g.setColor(Color.gray);
-				
-				if (i == selected )
-				{
-					g.setColor(Color.white);
-					g.drawString(">", (Game.WIDTH / 2) - (g.getFontMetrics().stringWidth(len) / 2) - 15, y);
-					g.drawString("<", (Game.WIDTH / 2) + (g.getFontMetrics().stringWidth(len) / 2) + 9, y);
-				}
-				g.drawString(msg, (Game.WIDTH / 2) - (g.getFontMetrics().stringWidth(msg) / 2), y);
-			
-			}
-			else{
 			String msg = strs[i];
 			int y = (Game.HEIGHT / 2) - strs.length * 4 + i * 24;
 			g.setColor(Color.gray);
-			
-			if (i == selected )
+			if (i == selected)
 			{
+				String left = ">", right = "<";
+
+				for (int[] menu_item : left_right_choice)
+				{
+					if (menu == menu_item[0] && i == menu_item[1])
+					{
+						left = "<";
+						right = ">";
+						break;
+					}
+				}
+
 				g.setColor(Color.white);
-				g.drawString(">", (Game.WIDTH / 2) - (g.getFontMetrics().stringWidth(len) / 2) - 15, y);
-				g.drawString("<", (Game.WIDTH / 2) + (g.getFontMetrics().stringWidth(len) / 2) + 9, y);
+				g.drawString(left, (Game.WIDTH / 2) - (g.getFontMetrics().stringWidth(len) / 2) - 15, y);
+				g.drawString(right, (Game.WIDTH / 2) + (g.getFontMetrics().stringWidth(len) / 2) + 9, y);
 			}
 			g.drawString(msg, (Game.WIDTH / 2) - (g.getFontMetrics().stringWidth(msg) / 2), y);
-		}
 		}
 
 		int w = title.getWidth(), h = title.getHeight();
@@ -386,7 +322,4 @@ public class Menu
 					h,
 					null);
 	}
-		
 }
-
-

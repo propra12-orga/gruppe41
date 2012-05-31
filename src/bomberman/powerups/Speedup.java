@@ -18,7 +18,7 @@ public class Speedup extends Powerup
 
 		try
 		{
-			img = new Animation(ImageIO.read(new File("data/sprites/speedup.png")), 0, 0, WIDTH, HEIGHT, 2, 300, false, 1);
+			img = new Animation(ImageIO.read(new File("data/sprites/speedup.png")), 0, 0, WIDTH, HEIGHT, ANI_COUNT, ANI_INTERVAL, false);
 		}
 		catch (IOException e)
 		{
@@ -30,8 +30,8 @@ public class Speedup extends Powerup
 	{
 		if (m instanceof Player)
 		{
-			((Player) m).movement_speed++;
-			OnHurt();
+			((Player) m).increaseSpeed(1);
+			pickedUp();
 		}
 	}
 }

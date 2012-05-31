@@ -3,7 +3,6 @@ package bomberman.map;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +12,6 @@ import javax.imageio.ImageIO;
 
 import bomberman.game.Game;
 import bomberman.objects.Moveable;
-import bomberman.objects.terrain.*;
 
 public class Map
 {
@@ -28,8 +26,6 @@ public class Map
 	public static final int		Y_OFFS				= BORDER_TOP_HEIGHT;
 	public static final int		X2_OFFS				= Game.WIDTH - BORDER_RIGHT_WIDTH;
 	public static final int		Y2_OFFS				= Game.HEIGHT - BORDER_BOT_HEIGHT;
-	
-	
 
 	public BufferedImage		tile_ground;
 	public BufferedImage		border_left;
@@ -37,60 +33,82 @@ public class Map
 	public BufferedImage		border_right;
 	public BufferedImage		border_bottom;
 
-
 	public int					num_of_players		= 0;
+	public double				droprate;
+
+	public String				name, path;
 
 	int							ground_tiles_count;
 	public int[][]				ground				= new int[TILES_COUNT_Y][TILES_COUNT_X];
 	public Vector<MapObject>	objects				= new Vector<MapObject>();
 
-	public Map(String mapname)
+	public Map(String name)
 	{
 		try
 		{
-			String path = "data/maps/" + mapname;
+			this.name = name;
+			this.path = "data/maps/" + name;
 
 			tile_ground = ImageIO.read(new File(path + "/tile_ground.png"));
 			border_top = ImageIO.read(new File(path + "/border_top.png"));
 			border_bottom = ImageIO.read(new File(path + "/border_bot.png"));
 			border_left = ImageIO.read(new File(path + "/border_left.png"));
 			border_right = ImageIO.read(new File(path + "/border_right.png"));
-			tile_ground = ImageIO.read(new File(path + "/tile_ground.png"));
-			
 
-			FileInputStream map = new FileInputStream(new File(path + "/" + mapname + ".map"));
-
-			// ground_tiles_count = map.read();
-
-			for (int y = 0; y < TILES_COUNT_Y; y++)
-			{
-				for (int x = 0; x < TILES_COUNT_X; x++)
-				{
-					ground[y][x] = map.read();
-				}
-			}
-
-			int map_fields_num = map.read();
-			for (int i = 0; i < map_fields_num; i++)
-			{
-				// objects.add(new MapObject(map.read(), map.read(), map.read(),
-				// ((map.read() == 0) ? false : true), (((map.read() == 0) ?
-				// false : true))));
-			}
-			for (int y = 1; y < 11; y += 2)
-			{
-				for (int x = 1; x < 17; x += 2)
-				{
-					Add(new Block(this, x, y));
-				}
-			}
-		
+			new MapParse(this, path + "/" + name + ".xml");
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
 		}
 
+	}
+
+	public void Update()
+	{
+		for (int i = 0; i < objects.size(); i++)
+		{
+			objects.get(i).Update();
+		}
+	}
+
+	public void Render(Graphics2D g)
+	{
+		g.drawImage(border_top, 0, 0, null);
+		g.drawImage(border_bottom, 0, Game.HEIGHT - BORDER_BOT_HEIGHT, null);
+		g.drawImage(border_left, 0, 0, null);
+		g.drawImage(border_right, Game.WIDTH - BORDER_RIGHT_WIDTH, 0, null);
+
+		for (int y = 0; y < TILES_COUNT_Y; y++)
+		{
+			for (int x = 0; x < TILES_COUNT_X; x++)
+			{
+				g.drawImage(tile_ground,
+							BORDER_LEFT_WIDTH + (x * TILE_SIZE),
+							BORDER_TOP_HEIGHT + (y * TILE_SIZE),
+							BORDER_LEFT_WIDTH + (x * TILE_SIZE) + TILE_SIZE,
+							BORDER_TOP_HEIGHT + (y * TILE_SIZE) + TILE_SIZE,
+							(ground[y][x] * TILE_SIZE),
+							0,
+							(ground[y][x] * TILE_SIZE) + TILE_SIZE,
+							TILE_SIZE,
+							null);
+			}
+		}
+
+		for (int i = 0; i < 3; i++)
+		{
+			for (int j = 0; j < Game.HEIGHT; j++)
+			{
+				for (MapObject o : objects)
+				{
+					if (o.y == j - 1 && o.render_priority == i + 1)
+					{
+						o.Render(g);
+					}
+				}
+			}
+		}
 	}
 
 	public void Add(MapObject o)
@@ -126,69 +144,41 @@ public class Map
 		}
 	}
 
-	public MapObject isNewPosGood(MapObject p, int x, int y)
+	public MapObject[] getBlockingObjects(Moveable m, int x, int y)
 	{
+		List<MapObject> l = new ArrayList<MapObject>();
+
 		for (MapObject o : objects)
 		{
-			// else if (getTileByX(self.x) == getTileByX(o.x) &&
-			// getTileByY(self.y) == getTileByY(o.y))
-			// else if (p.getXTile() == o.getXTile() && p.getYTile() ==
-			// o.getYTile())
-			if (o == p || !o.blocking)
+			if ((o == m) || (m.x + m.width > o.x) && (o.x + o.width > m.x) && (m.y + m.height > o.y) && (o.y + o.height > m.y))
 				continue;
-			else if (p.x + p.width > o.x && o.x + o.width > p.x && p.y + p.height > o.y && o.y + o.height > p.y)
-				continue;
-			else if (x + p.width > o.x && o.x + o.width > x && y + p.height > o.y && o.y + o.height > y)
-				return o;
-		}
-		return null;
-	}
-
-	public void Update()
-	{
-		for (int i = 0; i < objects.size(); i++)
-		{
-			objects.get(i).Update();
-		}
-	}
-
-	public void Render(Graphics2D g)
-	{
-		g.drawImage(border_top, 0, 0, null);
-		g.drawImage(border_bottom, 0, Game.HEIGHT - BORDER_BOT_HEIGHT, null);
-		g.drawImage(border_left, 0, 0, null);
-		g.drawImage(border_right, Game.WIDTH - BORDER_RIGHT_WIDTH, 0, null);
-
-		for (int y = 0; y < TILES_COUNT_Y; y++)
-		{
-			for (int x = 0; x < TILES_COUNT_X; x++)
+			else if ((x + m.width > o.x) && (o.x + o.width > x) && (y + m.height > o.y) && (o.y + o.height > y))
 			{
-				g.drawImage(tile_ground,
-							BORDER_LEFT_WIDTH + (x * TILE_SIZE),
-							BORDER_TOP_HEIGHT + (y * TILE_SIZE),
-							BORDER_LEFT_WIDTH + (x * TILE_SIZE) + TILE_SIZE,
-							BORDER_TOP_HEIGHT + (y * TILE_SIZE) + TILE_SIZE,
-							(ground[y][x] * TILE_SIZE),
-							0,
-							(ground[y][x] * TILE_SIZE) + TILE_SIZE,
-							TILE_SIZE,
-							null);
-			}
-		}
-		
-		for (int i = 0; i < 3; i++)
-		{
-			for (int j = 0; j < Game.HEIGHT; j++)
-			{
-				for (MapObject o : objects)
+				int side;
+
+				if (m.x != x)
 				{
-					if (o.y == j - 1 && o.render_priority == i + 1)
-					{
-						o.Render(g);
-					}
+					if (m.x < x)
+						side = MapObject.TOUCHED_LEFT;
+					else
+						side = MapObject.TOUCHED_RIGHT;
 				}
+				else
+				{
+					if (m.y < y)
+						side = MapObject.TOUCHED_TOP;
+					else
+						side = MapObject.TOUCHED_BOT;
+				}
+
+				o.OnCollide(m, side);
+
+				if (o.isBlocking(m))
+					l.add(o);
 			}
 		}
+
+		return l.toArray(new MapObject[l.size()]);
 	}
 
 	public int getXByTile(int tile_x)

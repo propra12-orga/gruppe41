@@ -9,6 +9,7 @@ public class Sound
 {
 	public static final Sound	explosion	= new Sound("data/sounds/explosion.wav");
 	public static final Sound	plantBomb	= new Sound("data/sounds/plantbomb.wav");
+	public static final Sound	pickup		= new Sound("data/sounds/pickup.wav");
 
 	private AudioClip			clip;
 

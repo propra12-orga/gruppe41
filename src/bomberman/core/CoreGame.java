@@ -3,109 +3,70 @@ package bomberman.core;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
 
 import bomberman.game.Game;
 import bomberman.input.Input;
 import bomberman.map.Map;
 import bomberman.map.MapObject;
 import bomberman.objects.terrain.Exit;
-import bomberman.objects.terrain.Rock;
 import bomberman.players.Player;
-import bomberman.powerups.Bombup;
-import bomberman.powerups.Flameup;
-import bomberman.powerups.Kickup;
 
 public class CoreGame
 {
-	private Game		game;
-	private Input		input;
-	private Map			map;
+	public static final int	NORMAL_GAME	= 0;
+	public static final int	BATTLE_GAME	= 1;
 
-	private boolean		paused	= false;
-	private boolean		ended 	= false;
-	private boolean		start   = true;
-	private long		pauseTime;
+	private Game			game;
+	private Input			input;
+	private Map				map;
 
-	private int		winner=0;
-	private String[]	menu	= { "Resume Game", "Restart", "Return to Gameselection", "Exit Game" };//"Return to Title Screen" ausgelagert
-	private String[]	end	= { "New Game?","Exit Game" };
-	
-	private int			selected;
-	
-	public double 		cardgenerator=0.6;
-	public int			exitcount = 0;
-	
-	private BufferedImage			one;
-	
+	private int				gametype;
+	private boolean[]		players;
 
-	public CoreGame(Game game, Input input, String mapname)
+	private boolean			paused		= false;
+	private long			pauseTime;
+
+	private String[]		menu		= { "Resume Game", "Return to Title Screen", "Exit Game" };
+	private String[]		end			= { "New Game?", "Exit Game" };
+	private int				selected;
+
+	private int				winner;
+
+	public CoreGame(Game game, Input input, String mapname, int gametype, boolean[] players)
 	{
 		this.game = game;
 		this.input = input;
 		this.map = new Map(mapname);
 
-		map.Add(new Player(input, map, 0, 0, 0));
-		map.Add(new Player(input, map, 0, 10, 1));
-		//map.Add(new Player(input, map, 16, 0, 2));
-		//map.Add(new Player(input, map, 16, 10, 3));
-		//map.Add(new Speedup(map, 4, 2));
-		//map.Add(new Kickup(map, 4, 3));			//nicht mehr notwendig da zufallskalkulator integriert
-		//map.Add(new Flameup(map, 4, 2));
-		//map.Add(new Bombup(map, 4, 4));
-		
-		do{
-			int a=(int)(Math.random()*17);
-			int b=(int)(Math.random()*11);
-			if(a!=0&&b!=0&&b!=10&&a!=16&&a%2==0&&b%2==0){
-				map.Add(new Exit(map,a,b));
-				exitcount=1;
-			
-			}
-			}
-			while(exitcount!=1);
-		
-		for (int x = 0; x < 17; x += 1)
+		this.gametype = gametype;
+		this.players = players;
+		this.winner = -1;
+
+		if (gametype == NORMAL_GAME)
 		{
-			if(x==0||x==16){
-				for (int y = 2; y< 9; y += 1){
-					if(Math.random()<cardgenerator)
-					map.Add(new Rock(map, x, y));
-				}
-			
-			}
-			else if(x%2==0){
-				for (int y = 0; y< 11; y += 1){
-					if(Math.random()<cardgenerator)
-					map.Add(new Rock(map, x, y));
-				}
-			}
-			else if(x%2!=0){
-			for (int y = 0; y< 11; y += 2)
+			map.Add(new Player(input, map, 0, 0, 0));
+
+			do
 			{
-				if(x==1||x==15){
-					if(y<8){
-						if(Math.random()<cardgenerator)
-						map.Add(new Rock(map, x, y+2));
-					
-					}
+				int a = (int) (Math.random() * 17);
+				int b = (int) (Math.random() * 11);
+				if (a != 0 && b != 0 && b != 10 && a != 16 && a % 2 == 0 && b % 2 == 0)
+				{
+					map.Add(new Exit(map, a, b));
+					break;
 				}
-				else
-				if(Math.random()<cardgenerator)
-				map.Add(new Rock(map, x, y));
-				
+			} while (true);
+		}
+		else if (gametype == BATTLE_GAME)
+		{
+			for (int i = 0; i < 4; i++)
+			{
+				if (players[i])
+				{
+					map.Add(new Player(input, map, Game.spawns[i][0], Game.spawns[i][1], i));
 				}
 			}
-			}
-		
-		
-		
-	
-		
+		}
 	}
 
 	public void Pause()
@@ -151,13 +112,10 @@ public class CoreGame
 				case 0:
 					Resume();
 					break;
-				case 1:		
-					game.startCoreGame();
-					break;
-				case 2:
+				case 1:
 					game.stopCoreGame();
 					break;
-				case 3:
+				case 2:
 					System.exit(0);
 					break;
 			}
@@ -169,7 +127,6 @@ public class CoreGame
 	public void RenderPause(Graphics2D g)
 	{
 		String len = "";
-	
 
 		for (int i = 0; i < menu.length; i++)
 		{
@@ -181,14 +138,12 @@ public class CoreGame
 		int y1 = (Game.HEIGHT / 2) - menu.length * 4 - 24, y2 = (Game.HEIGHT / 2) - menu.length * 4 + menu.length * 24;
 
 		g.fillRect(x1, y1, x2 - x1 + g.getFontMetrics().stringWidth("<"), y2 - y1);
-		
 
 		for (int i = 0; i < menu.length; i++)
 		{
 			String msg = menu[i];
 			int y = (Game.HEIGHT / 2) - menu.length * 4 + i * 24;
 			g.setColor(Color.gray);
-			
 			if (i == selected)
 			{
 				g.setColor(Color.white);
@@ -199,97 +154,6 @@ public class CoreGame
 		}
 	}
 
-	public void Update()
-	{
-		if (paused)
-		{
-			UpdatePause();
-			return;
-		}
-		if (ended)
-		{
-			UpdateEnd();
-			return;
-		}
-
-		map.Update();
-		
-		for (MapObject o : map.objects)
-		{
-			if (o instanceof Player){
-				if(((Player) o).hasreachedexit==true){
-				winner=(((Player) o).player_id + 1);
-				ended=true;	
-				map.Update();
-		}
-		}
-		}
-		;
-		if (map.num_of_players < 2)
-		{
-			for (MapObject o : map.objects)
-			{
-				if (o instanceof Player)
-					winner=(((Player) o).player_id + 1);
-					ended=true;
-					map.Update();
-			}
-			;
-		}
-		if (input.keys[KeyEvent.VK_ESCAPE].clicked)
-			Pause();
-
-	}
-
-	public void Render(Graphics2D g)
-	{
-		map.Render(g);
-		
-
-		if (paused)
-			RenderPause(g);
-		if (ended)
-			RenderEnd(g);
-	/*	if (start)
-			RenderStart(g);
-			start=false;
-			*/
-	}
-	
-	/*public void RenderStart(Graphics2D g){			// soll countdown zum anfang des spieles ausgeben
-		
-		try
-		{
-			one = ImageIO.read(new File("data/sprites/eins.png"));
-			
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-		
-		int w = one.getWidth(), h = one.getHeight();
-		g.drawImage(one,
-					(Game.WIDTH / 2) - (w / 2),
-					80,
-					(Game.WIDTH / 2) - (w / 2) + w,
-					80 + h,
-					0,
-					0,
-					w,
-					h,
-					null);
-		
-		try
-		{
-			g.wait(1);
-		}
-		catch (InterruptedException e)
-			{
-				e.printStackTrace();
-			}
-		
-	}	*/
 	public void UpdateEnd()
 	{
 		int sel = 0;
@@ -315,24 +179,34 @@ public class CoreGame
 			switch (selected)
 			{
 				case 0:
-					game.startCoreGame();
+					if (gametype == NORMAL_GAME)
+					{
+						game.startCoreGame(NORMAL_GAME, null);
+					}
+					else if (gametype == BATTLE_GAME)
+					{
+						game.startCoreGame(BATTLE_GAME, players);
+					}
 					break;
-				case 1:		
+				case 1:
 					System.exit(0);
 					break;
-				
+
 			}
 		}
 		else if (input.keys[KeyEvent.VK_ESCAPE].clicked)
-			System.exit(0);
+			game.stopCoreGame();
 	}
+
 	public void RenderEnd(Graphics2D g)
 	{
 		String len = "";
-		g.fillRect(Game.WIDTH*107/320, Game.HEIGHT*93/320,Game.WIDTH*108/320 , Game.HEIGHT*93/320);
+		g.fillRect(Game.WIDTH * 107 / 320, Game.HEIGHT * 93 / 320, Game.WIDTH * 108 / 320, Game.HEIGHT * 93 / 320);
 		g.setColor(Color.gray);
-		g.drawString("Der Sieger ist Spieler Nummer "+ winner, Game.WIDTH*31/80,Game.HEIGHT*31/80);
-
+		if (winner != 0)
+			g.drawString("Der Sieger ist Spieler Nummer " + winner, Game.WIDTH * 31 / 80, Game.HEIGHT * 31 / 80);
+		else
+			g.drawString("Verloren :(", Game.WIDTH * 31 / 80, Game.HEIGHT * 31 / 80);
 
 		for (int i = 0; i < end.length; i++)
 		{
@@ -341,17 +215,18 @@ public class CoreGame
 		}
 
 		int x1 = (Game.WIDTH / 2) - (g.getFontMetrics().stringWidth(len) / 2) - 15, x2 = (Game.WIDTH / 2) + (g.getFontMetrics().stringWidth(len) / 2) + 9;
-		//int y1 = (Game.HEIGHT / 2) - end.length * 4 - 24, y2 = (Game.HEIGHT / 2) - end.length * 4 + end.length * 24;
+		// int y1 = (Game.HEIGHT / 2) - end.length * 4 - 24, y2 = (Game.HEIGHT /
+		// 2) - end.length * 4 + end.length * 24;
 
-		//g.fillRect(x1, y1, x2 - x1 + g.getFontMetrics().stringWidth("<"), y2 - y1);
-		
+		// g.fillRect(x1, y1, x2 - x1 + g.getFontMetrics().stringWidth("<"), y2-
+		// y1);
 
 		for (int i = 0; i < end.length; i++)
 		{
 			String msg = end[i];
 			int y = (Game.HEIGHT / 2) - end.length * 4 + i * 24;
 			g.setColor(Color.gray);
-			
+
 			if (i == selected)
 			{
 				g.setColor(Color.white);
@@ -360,5 +235,62 @@ public class CoreGame
 			}
 			g.drawString(msg, (Game.WIDTH / 2) - (g.getFontMetrics().stringWidth(msg) / 2), y);
 		}
+	}
+
+	public void Update()
+	{
+		if (winner > -1)
+		{
+			UpdateEnd();
+			return;
+		}
+		else if (paused)
+		{
+			UpdatePause();
+			return;
+		}
+
+		map.Update();
+
+		if (gametype == NORMAL_GAME)
+		{
+			Player player = null;
+			
+			for (MapObject o : map.objects)
+			{
+				if (o instanceof Player)
+					player = (Player) o;
+			}
+			
+			if (player == null)
+				winner = 0;
+			else if (player.hasReachedExit)
+				winner = 1;
+		}
+		else if (gametype == BATTLE_GAME)
+		{
+			if (map.num_of_players < 2)
+			{
+				for (MapObject o : map.objects)
+				{
+					if (o instanceof Player)
+						winner = ((Player) o).player_id + 1;
+				}
+			}
+		}
+
+		if (input.keys[KeyEvent.VK_ESCAPE].clicked)
+			Pause();
+
+	}
+
+	public void Render(Graphics2D g)
+	{
+		map.Render(g);
+
+		if (winner > -1)
+			RenderEnd(g);
+		else if (paused)
+			RenderPause(g);
 	}
 }

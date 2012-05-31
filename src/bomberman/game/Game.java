@@ -25,7 +25,7 @@ public class Game extends Canvas
 
 	public boolean				running				= true;
 	private boolean				playing				= false;
-	
+
 	private CoreGame			coregame;
 	private Input				input;
 	private Menu				menu;
@@ -35,6 +35,13 @@ public class Game extends Canvas
 													{ KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, Input.VK_LCONTROL },
 													{ KeyEvent.VK_I, KeyEvent.VK_K, KeyEvent.VK_J, KeyEvent.VK_L, KeyEvent.VK_V },
 													{ KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD5, KeyEvent.VK_NUMPAD4, KeyEvent.VK_NUMPAD6, KeyEvent.VK_ADD }
+													};
+
+	public static int[][]		spawns				= {
+													{ 0, 0 },
+													{ 16, 0 },
+													{ 0, 10 },
+													{ 16, 10 }
 													};
 
 	public Game()
@@ -74,30 +81,24 @@ public class Game extends Canvas
 			menu.Update();
 	}
 
-	public void Render() throws InterruptedException 
+	public void Render()
 	{
-		try{
 		Graphics2D g = (Graphics2D) strategy.getDrawGraphics();
 		g.setColor(Color.black);
 		g.fillRect(0, 0, WIDTH, HEIGHT);
 
-		if (playing){
+		if (playing)
 			coregame.Render(g);
-		g.dispose();
-		strategy.show();}
-		else{
+		else
 			menu.Render(g);
+
 		g.dispose();
-		strategy.show();}}
-		catch (Exception e) {
-			e.printStackTrace();}
-
+		strategy.show();
 	}
-	
 
-	public void startCoreGame()
+	public void startCoreGame(int gametype, boolean[] players)
 	{
-		coregame = new CoreGame(this, input, "basic");
+		coregame = new CoreGame(this, input, "basic", gametype, players);
 		playing = true;
 	}
 
