@@ -68,14 +68,14 @@ public class Bomb extends Moveable
 			isExploding = true;
 
 			explode(tile_x, tile_y);
-			map.Add(new Flame(map, tile_x, tile_y, Flame.FLAMES_CENTER));
+			map.Add(new Flame(map, tile_x, tile_y, Flame.FLAMES_MID));
 
 			for (int xx = tile_x - 1; xx > tile_x - radius; xx--)
 			{
 				if (!explode(xx, tile_y))
 					break;
 				else
-					map.Add(new Flame(map, xx, tile_y, (xx > tile_x - radius + 1) ? Flame.FLAMES_HORIZONTAL : Flame.FLAMES_LEFT_EDGE));
+					map.Add(new Flame(map, xx, tile_y, (xx > tile_x - radius + 1) ? Flame.FLAMES_LEFT : Flame.FLAMES_LEFT_EDGE));
 			}
 
 			for (int xx = tile_x + 1; xx < tile_x + radius; xx++)
@@ -83,7 +83,7 @@ public class Bomb extends Moveable
 				if (!explode(xx, tile_y))
 					break;
 				else
-					map.Add(new Flame(map, xx, tile_y, (xx < tile_x + radius - 1) ? Flame.FLAMES_HORIZONTAL : Flame.FLAMES_RIGHT_EDGE));
+					map.Add(new Flame(map, xx, tile_y, (xx < tile_x + radius - 1) ? Flame.FLAMES_RIGHT : Flame.FLAMES_RIGHT_EDGE));
 			}
 
 			for (int yy = tile_y - 1; yy > tile_y - radius; yy--)
@@ -91,7 +91,7 @@ public class Bomb extends Moveable
 				if (!explode(tile_x, yy))
 					break;
 				else
-					map.Add(new Flame(map, tile_x, yy, (yy > tile_y - radius + 1) ? Flame.FLAMES_VERTICAL : Flame.FLAMES_TOP_EDGE));
+					map.Add(new Flame(map, tile_x, yy, (yy > tile_y - radius + 1) ? Flame.FLAMES_TOP : Flame.FLAMES_TOP_EDGE));
 			}
 
 			for (int yy = tile_y + 1; yy < tile_y + radius; yy++)
@@ -99,7 +99,7 @@ public class Bomb extends Moveable
 				if (!explode(tile_x, yy))
 					break;
 				else
-					map.Add(new Flame(map, tile_x, yy, (yy < tile_y + radius - 1) ? Flame.FLAMES_VERTICAL : Flame.FLAMES_BOT_EDGE));
+					map.Add(new Flame(map, tile_x, yy, (yy < tile_y + radius - 1) ? Flame.FLAMES_BOT : Flame.FLAMES_BOT_EDGE));
 			}
 
 			Die();

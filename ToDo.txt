@@ -10,6 +10,7 @@ Allgemein:
  * Paletten für Spieler hinzufügen
  * bessere Bilder für Explosionen
  * Pause- und End-Menu verschönern
+ * Animationen (z.B. wenn Spieler stirbt, wenn Rock kaputt geht, etc.)
 
  danach:
  * Monster, Bots, etc.
