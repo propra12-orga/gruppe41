@@ -2,7 +2,7 @@
 Allgemein:
 
  wichtig:
- * Mapauswahl bei Battle-Game
+ * Mapauswahl bei Battle-Game (Rahmen mit kleinem Preview, evtl. verschiedene MapObjects für verschiedene Maps, Map-Format anpassen)
  * Dokumentation per Javadoc
  
  auch wichtig:

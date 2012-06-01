@@ -1,10 +1,13 @@
 package bomberman.objects.terrain;
 
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import bomberman.animation.Animation;
 import bomberman.map.Map;
 import bomberman.map.MapObject;
 import bomberman.objects.Moveable;
@@ -15,13 +18,19 @@ import bomberman.powerups.Speedup;
 
 public class Rock extends MapObject
 {
+	public boolean		broken, ready_to_die;
+	private Animation	ani;
+
 	public Rock(Map map, int tile_x, int tile_y)
 	{
 		super(map, tile_x, tile_y);
 
 		try
 		{
-			img = ImageIO.read(new File(map.path + "/rock.png"));
+			BufferedImage temp = ImageIO.read(new File(map.path + "/rock.png"));
+
+			img = temp.getSubimage(0, 0, Map.TILE_SIZE, Map.TILE_SIZE);
+			ani = new Animation(temp, 1, 0, Map.TILE_SIZE, Map.TILE_SIZE, 6, 100, false);
 		}
 		catch (IOException e)
 		{
@@ -29,18 +38,41 @@ public class Rock extends MapObject
 		}
 	}
 
+	public void Update()
+	{
+		if (broken)
+		{
+			ani.Update();
+
+			if (ani.current == 0 && ready_to_die)
+				Die();
+			else if (ani.current == 5)
+				ready_to_die = true;
+		}
+	}
+
+	public void Render(Graphics2D g)
+	{
+		if (!broken)
+			draw(g, 0, 0);
+		else
+			ani.Render(g, x, y);
+	}
+
 	public boolean isBlocking(Moveable m)
 	{
-		return true;
+		return broken ? false : true;
 	}
 
 	public void OnHurt()
 	{
-		Die();
+		broken = true;
 	}
 
 	public void Die()
 	{
+		super.Die();
+
 		if (Math.random() < map.droprate)
 		{
 			int powerup = (int) (Math.random() * 4 + 1);
@@ -61,7 +93,5 @@ public class Rock extends MapObject
 					break;
 			}
 		}
-
-		super.Die();
 	}
 }

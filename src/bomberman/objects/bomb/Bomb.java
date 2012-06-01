@@ -149,9 +149,9 @@ public class Bomb extends Moveable
 
 	public void Die()
 	{
-		this.player.bombs++;
-		Sound.explosion.play();
 		super.Die();
+		Sound.explosion.play();
+		this.player.bombs++;
 	}
 
 	public void OnCollide(Moveable m, int side)

@@ -101,12 +101,6 @@ public class Player extends Mob
 
 		if (input.keys[controls[4]].down)
 			plantBomb();
-
-		if (input.keys[KeyEvent.VK_F1].clicked)
-			x--;
-		if (input.keys[KeyEvent.VK_F2].clicked)
-			y--;
-
 	}
 
 	public void Render(Graphics2D g)
@@ -168,12 +162,14 @@ public class Player extends Mob
 
 	public void OnSpawn()
 	{
-		map.num_of_players++;
+		this.map.num_of_players++;
+		this.movement_speed++;
 	}
 
 	public void Die()
 	{
 		super.Die();
+		map.Add(new PlayerBurnt(map, x, y));
 		map.num_of_players--;
 	}
 
