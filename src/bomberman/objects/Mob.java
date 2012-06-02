@@ -7,6 +7,7 @@ public class Mob extends Moveable
 	public Mob(Map map, int tile_x, int tile_y)
 	{
 		super(map, tile_x, tile_y);
-		this.render_priority = 3;
+
+		this.render_priority = 2;
 	}
 }

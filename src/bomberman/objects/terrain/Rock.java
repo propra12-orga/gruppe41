@@ -73,6 +73,14 @@ public class Rock extends MapObject
 	{
 		super.Die();
 
+		MapObject[] ol = map.getObjectsOnTile(getXTile(), getYTile());
+
+		for (MapObject o : ol)
+		{
+			if (o instanceof Exit)
+				return;
+		}
+
 		if (Math.random() < map.droprate)
 		{
 			int powerup = (int) (Math.random() * 4 + 1);

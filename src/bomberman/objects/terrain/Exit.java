@@ -17,6 +17,8 @@ public class Exit extends MapObject
 	{
 		super(map, tile_x, tile_y);
 
+		this.render_priority = 0;
+
 		try
 		{
 			img = ImageIO.read(new File(map.path + "/exit.png"));

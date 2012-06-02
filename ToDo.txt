@@ -6,6 +6,7 @@ Allgemein:
  * Dokumentation per Javadoc
  
  auch wichtig:
+ * unterschiedliche Droprates?
  * evtl. (weitere) Sounds
  * Paletten für Spieler hinzufügen
  * bessere Bilder für Explosionen

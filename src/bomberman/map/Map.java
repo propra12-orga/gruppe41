@@ -102,7 +102,7 @@ public class Map
 			{
 				for (MapObject o : objects)
 				{
-					if (o.y == j - 1 && o.render_priority == i + 1)
+					if (o.y == j - 1 && o.render_priority == i)
 					{
 						o.Render(g);
 					}
