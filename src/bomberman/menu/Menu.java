@@ -29,7 +29,10 @@ public class Menu
 	private static final String[][]	items				= {
 														{ "Start  Game", "Settings", "Exit" },
 														{ "Singleplayer", "Battle Game", "", "Back" },
-														{ "Player 1   ", "Player 2   ", "Player 3   ", "Player 4   " },
+														{ "Player 1   ", "Player 2   ", "Player 3   ", "Player 4   "/*
+																													 * ,
+																													 * "Back"
+																													 */},
 														{ "Player ", "Back" },
 														{ "Up", "Down", "Left", "Right", "Action", "", "O.K." }
 														};
@@ -76,6 +79,7 @@ public class Menu
 	{
 		if (menu == BATTLE_SCREEN)
 		{
+
 			if (input.keys[KeyEvent.VK_RIGHT].clicked)
 				players[selected] = true;
 			else if (input.keys[KeyEvent.VK_LEFT].clicked)
@@ -171,9 +175,26 @@ public class Menu
 					}
 					break;
 				case BATTLE_SCREEN:
-					game.startCoreGame(CoreGame.BATTLE_GAME, players);
-					Change(TITLE_SCREEN);
-					break;
+					int headcounter = 0;
+					for (int counter = 0; counter < 4; counter++)
+					{
+						if (players[counter] == true)
+						{
+							headcounter++;
+						}
+					}
+					if (headcounter >= 2)
+					{
+						game.startCoreGame(CoreGame.BATTLE_GAME, players);
+						Change(TITLE_SCREEN);
+						break;
+					}
+					else
+					{
+						Change(BATTLE_SCREEN);
+						break;
+					}
+
 				case SETTINGS_SCREEN:
 					switch (selected)
 					{

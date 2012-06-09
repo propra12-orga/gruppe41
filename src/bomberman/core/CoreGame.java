@@ -26,7 +26,7 @@ public class CoreGame
 	private boolean			paused		= false;
 	private long			pauseTime;
 
-	private String[]		menu		= { "Resume Game", "Return to Title Screen", "Exit Game" };
+	private String[]		menu		= { "Resume Game", "Restart Game", "Return to Title Screen", "Exit Game" };
 	private String[]		end			= { "New Game?", "Exit Game" };
 	private int				selected;
 
@@ -45,7 +45,6 @@ public class CoreGame
 		if (gametype == NORMAL_GAME)
 		{
 			map.Add(new Player(input, map, 0, 0, 0));
-
 			do
 			{
 				int a = (int) (Math.random() * 17);
@@ -113,9 +112,19 @@ public class CoreGame
 					Resume();
 					break;
 				case 1:
-					game.stopCoreGame();
+					if (gametype == NORMAL_GAME)
+					{
+						game.startCoreGame(0, null);
+					}
+					else
+					{
+						game.startCoreGame(1, players);
+					}
 					break;
 				case 2:
+					game.stopCoreGame();
+					break;
+				case 3:
 					System.exit(0);
 					break;
 			}
@@ -255,13 +264,13 @@ public class CoreGame
 		if (gametype == NORMAL_GAME)
 		{
 			Player player = null;
-			
+
 			for (MapObject o : map.objects)
 			{
 				if (o instanceof Player)
 					player = (Player) o;
 			}
-			
+
 			if (player == null)
 				winner = 0;
 			else if (player.hasReachedExit)

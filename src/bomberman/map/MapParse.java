@@ -8,6 +8,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import bomberman.objects.terrain.Block;
+import bomberman.objects.terrain.Exit;
 import bomberman.objects.terrain.Rock;
 
 public class MapParse
@@ -112,6 +113,8 @@ public class MapParse
 	public MapParse(final Map map, String file)
 	{
 		this.map = map;
+		
+		
 
 		try
 		{
