@@ -10,26 +10,41 @@ import bomberman.map.Map;
 import bomberman.objects.Moveable;
 import bomberman.players.Player;
 
-public class Flameup extends Powerup
-{
-	public Flameup(Map map, int tile_x, int tile_y)
-	{
+/**
+ * The flameup increases the strength of the player and thus the radius of his
+ * bombs.
+ * 
+ * @see bomberman.powerups.Powerup
+ * 
+ */
+public class Flameup extends Powerup {
+	/**
+	 * Creates a new flameup item. See super constructor.
+	 * 
+	 * @param map
+	 * @param tile_x
+	 * @param tile_y
+	 */
+	public Flameup(Map map, int tile_x, int tile_y) {
 		super(map, tile_x, tile_y);
 
-		try
-		{
-			img = new Animation(ImageIO.read(new File("data/sprites/flameup.png")), 0, 0, WIDTH, HEIGHT, ANI_COUNT, ANI_INTERVAL, false);
-		}
-		catch (IOException e)
-		{
+		try {
+			img = new Animation(ImageIO.read(new File(
+					"data/sprites/flameup.png")), 0, 0, WIDTH, HEIGHT,
+					ANI_COUNT, ANI_INTERVAL, false);
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void OnTouch(Moveable m, int side)
-	{
-		if (m instanceof Player)
-		{
+	/**
+	 * Map object method. If the bombup is touched by a player, the players
+	 * strength is increased and the pickedUp method is called up.
+	 * 
+	 * @see #pickedUp()
+	 */
+	public void OnTouch(Moveable m, int side) {
+		if (m instanceof Player) {
 			((Player) m).strength++;
 			pickedUp();
 		}

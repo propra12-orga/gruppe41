@@ -2,7 +2,12 @@ package bomberman.objects;
 
 import bomberman.map.Map;
 import bomberman.map.MapObject;
-
+/**
+ * Moeable objects on the map. This is the super class of mob and subclass of map object.
+ * @see bomberman.map.MapObject
+ * @see bomberman.objects.Mob
+ *
+ */
 public class Moveable extends MapObject
 {
 

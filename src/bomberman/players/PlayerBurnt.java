@@ -9,7 +9,11 @@ import javax.imageio.ImageIO;
 import bomberman.animation.Animation;
 import bomberman.map.Map;
 import bomberman.map.MapObject;
-
+/**
+ * An object of this type shows a dying player. Does not work in the game.
+ * @see bomberman.map.MapObject
+ *
+ */
 public class PlayerBurnt extends MapObject
 {
 	public static final int	WIDTH	= 46;

@@ -16,32 +16,38 @@ import bomberman.powerups.Flameup;
 import bomberman.powerups.Kickup;
 import bomberman.powerups.Speedup;
 
-public class Rock extends MapObject
-{
-	public boolean		broken, ready_to_die;
-	private Animation	ani;
+/**
+ * A destructable rock on the map. Will be randomly placed on the map by map
+ * parse. Extends map object.
+ * 
+ * @see bomberman.map.MapObject
+ * @see bomberman.map.MapParse
+ * 
+ */
+public class Rock extends MapObject {
+	public boolean broken, ready_to_die;
+	private Animation ani;
 
-	public Rock(Map map, int tile_x, int tile_y)
-	{
+	public Rock(Map map, int tile_x, int tile_y) {
 		super(map, tile_x, tile_y);
 
-		try
-		{
+		try {
 			BufferedImage temp = ImageIO.read(new File(map.path + "/rock.png"));
 
 			img = temp.getSubimage(0, 0, Map.TILE_SIZE, Map.TILE_SIZE);
-			ani = new Animation(temp, 1, 0, Map.TILE_SIZE, Map.TILE_SIZE, 6, 100, false);
-		}
-		catch (IOException e)
-		{
+			ani = new Animation(temp, 1, 0, Map.TILE_SIZE, Map.TILE_SIZE, 6,
+					100, false);
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void Update()
-	{
-		if (broken)
-		{
+	/**
+	 * Updates the rock. Doesn't do anything unless the rock is currently
+	 * blowing up. The rock will be removed after finishing the animation.
+	 */
+	public void Update() {
+		if (broken) {
 			ani.Update();
 
 			if (ani.current == 0 && ready_to_die)
@@ -51,54 +57,65 @@ public class Rock extends MapObject
 		}
 	}
 
-	public void Render(Graphics2D g)
-	{
+	/**
+	 * Renders the rock by rendering either drawing it or drawing the animation
+	 * for explosion.
+	 */
+	public void Render(Graphics2D g) {
 		if (!broken)
 			draw(g, 0, 0);
 		else
 			ani.Render(g, x, y);
 	}
 
-	public boolean isBlocking(Moveable m)
-	{
+	/**
+	 * Method from map object. Will return true if the rock is solid and false
+	 * if the rock was destroyed and isn't removed yet.
+	 */
+	public boolean isBlocking(Moveable m) {
 		return broken ? false : true;
 	}
 
-	public void OnHurt()
-	{
+	/**
+	 * Map object method. When a rock gots hit by an explosion, the boolean
+	 * "broken" is set true. Next update method will start the animation and
+	 * remove the rock later.
+	 */
+	public void OnHurt() {
 		broken = true;
 	}
 
-	public void Die()
-	{
+	/**
+	 * Map object method. Calls up super method, removin the object from the
+	 * map. After that, there are items placed onto the map or the exit is
+	 * shown.
+	 */
+	public void Die() {
 		super.Die();
 
 		MapObject[] ol = map.getObjectsOnTile(getXTile(), getYTile());
 
-		for (MapObject o : ol)
-		{
+		for (MapObject o : ol) {
 			if (o instanceof Exit)
 				return;
 		}
 
-		if (Math.random() < map.droprate)
-		{
+		if (Math.random() < map.droprate) {
 			int powerup = (int) (Math.random() * 4 + 1);
 
-			switch (powerup)
-			{
-				case 1:
-					map.Add(new Bombup(map, getXTile(), getYTile()));
-					break;
-				case 2:
-					map.Add(new Flameup(map, getXTile(), getYTile()));
-					break;
-				case 3:
-					map.Add(new Kickup(map, getXTile(), getYTile()));
-					break;
-				case 4:
-					map.Add(new Speedup(map, getXTile(), getYTile()));
-					break;
+			switch (powerup) {
+			case 1:
+				map.Add(new Bombup(map, getXTile(), getYTile()));
+				break;
+			case 2:
+				map.Add(new Flameup(map, getXTile(), getYTile()));
+				break;
+			case 3:
+				map.Add(new Kickup(map, getXTile(), getYTile()));
+				break;
+			case 4:
+				map.Add(new Speedup(map, getXTile(), getYTile()));
+				break;
 			}
 		}
 	}
