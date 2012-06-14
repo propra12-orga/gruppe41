@@ -1,18 +1,23 @@
+Dritter Meilstein:
+ - Pflicht:
+	* Bedienungsanleitung (offen, kann zuletzt erstellt werden)
+	* Netzwerkmodus für zwei Spieler (offen, Freiwillige vor...)
+ - Zusatz:
+ 	* Items (vorhanden, 2 Punkte)
+ 	* Sound (vorhanden, 1 Punkt)
+ 	* Bots/Zombiemodus (Philipp, Punkte variabel, Nachfragen!)
+ 	* Highscore (offen, 2 Punkte)
+ 	* Karteneditor (offen, 2-5 Punkte)
 
-Allgemein:
+Sonstiges/Optional:
+ * JavaDoc verbessern (TODO gesetzt, insbs. Moveable)
+ * Animation bei Spielertod startet nicht
+ * Menü für Pause/Spielende verschönern
+ * weitere Sounds (Hintergrundmusik?)
+ * einstellbare Droprate
+ * Kartenauswahl Mehrspieler
 
- wichtig:
- * Mapauswahl bei Battle-Game (Rahmen mit kleinem Preview, evtl. verschiedene MapObjects für verschiedene Maps, Map-Format anpassen)
- * Dokumentation per Javadoc
  
- auch wichtig:
- * unterschiedliche Droprates?
- * evtl. (weitere) Sounds
- * Paletten für Spieler hinzufügen
- * bessere Bilder für Explosionen
- * Pause- und End-Menu verschönern
- * Animationen (z.B. wenn Spieler stirbt, wenn Rock kaputt geht, etc.)
-
- danach:
- * Monster, Bots, etc.
- * Netzwerkmodus
+ Falls niemand anderes will kann ich auch das Netzwerk machen (ohne Erfolgsgarantie).
+ 
+ Zuletzt geändert: 2012-06-14, Philipp

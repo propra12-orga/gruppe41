@@ -67,7 +67,7 @@ public class Bomberman {
 				frames = 0;
 				ticks = 0;
 				lastTimer = System.currentTimeMillis();
-			}
+			}//*/
 			Thread.sleep(1);
 		}
 	}

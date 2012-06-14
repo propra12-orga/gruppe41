@@ -7,7 +7,8 @@ import bomberman.objects.Mob;
 import bomberman.objects.Moveable;
 
 /**
- * Abstract class. The following classes (and their subclasses) are sublasses of MapObject:
+ * Abstract class. The following classes (and their subclasses) are sublasses of
+ * MapObject:
  * 
  * @see bomberman.objects.Moveable
  * @see bomberman.objects.terrain.Block
@@ -56,11 +57,16 @@ public abstract class MapObject {
 	public void Update() {
 
 	}
+
 	/**
 	 * Short draw version, calls up ful method.
-	 * @param g - Graphics.
-	 * @param sprite_x - x position.
-	 * @param sprite_y - y position.
+	 * 
+	 * @param g
+	 *            - Graphics.
+	 * @param sprite_x
+	 *            - x position.
+	 * @param sprite_y
+	 *            - y position.
 	 */
 	public void draw(Graphics2D g, int sprite_x, int sprite_y) {
 		draw(g, x, y, sprite_x, sprite_y);
@@ -71,8 +77,10 @@ public abstract class MapObject {
 				sprite_y * HEIGHT, sprite_x * WIDTH + WIDTH, sprite_y * HEIGHT
 						+ HEIGHT, null);
 	}
+
 	/**
 	 * Render method, draws object with x = y = 0.
+	 * 
 	 * @param g
 	 */
 	public void Render(Graphics2D g) {
@@ -87,22 +95,52 @@ public abstract class MapObject {
 		return map.getTileByY(y + (height / 2));
 	}
 
+	/**
+	 * This method return a boolean, true if another moveable cannot move throuw
+	 * it, false if it is possible.
+	 * 
+	 * @return Returns false if not overwritten in subclasses.
+	 */
 	public boolean isBlocking(Moveable m) {
 		return false;
 	}
 
+	/**
+	 * This method will be overridden in subclasses. Tells what to do when
+	 * getting in contact with a moveable.
+	 * 
+	 * @param m
+	 *            - The moveable touching the map object.
+	 * @param side
+	 *            - The direction/side of touching.
+	 */
 	public void OnTouch(Moveable m, int side) {
 
 	}
 
+	/**
+	 * This method will be overriden in subclasses. Tells what to do when
+	 * colliding with a moveable map object.
+	 * 
+	 * @param m
+	 * @param side
+	 */
 	public void OnCollide(Moveable m, int side) {
 
 	}
 
+	/**
+	 * Tells what to do when colliding with a explosion flame. Will be
+	 * overwritten in subclasses. For example players die, bombs are activated,
+	 * rocks are destroyed, blocks ignore this.
+	 */
 	public void OnHurt() {
 
 	}
 
+	/**
+	 * Object is removed from the game.
+	 */
 	public void Die() {
 		map.Remove(this);
 	}
