@@ -35,7 +35,7 @@ public class MapParse {
 	}
 
 	/**
-	 * Generates indestructable walls along a row.
+	 * Generates indestructible walls along a row.
 	 * 
 	 * @param row
 	 *            - Number of the row.

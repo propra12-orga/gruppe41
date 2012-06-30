@@ -11,7 +11,7 @@ import bomberman.objects.Moveable;
 import bomberman.players.Player;
 
 /**
- * This powerup increases the players speed (surprise!).
+ * This power-up increases the players speed (surprise!).
  * @see bomberman.powerups.Powerup
  *
  */
@@ -28,7 +28,7 @@ public class Speedup extends Powerup {
 		}
 	}
 	/**
-	 * Map object method. If the bombup is touched by a player, the players
+	 * Map object method. If the bomb-up is touched by a player, the players
 	 * speed is increased and the pickedUp method is called up.
 	 * 
 	 * @see #pickedUp()

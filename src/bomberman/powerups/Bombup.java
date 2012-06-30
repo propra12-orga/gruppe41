@@ -17,7 +17,7 @@ import bomberman.players.Player;
  */
 public class Bombup extends Powerup {
 	/**
-	 * Creates a new bombup item at the map position.
+	 * Creates a new bomb-up item at the map position.
 	 * @param map - The map to be added to.
 	 * @param tile_x - x position on the map.
 	 * @param tile_y - y position on the map.
@@ -35,8 +35,8 @@ public class Bombup extends Powerup {
 	}
 	
 	/**
-	 * Map object method. If the bombup is touched by a player, the players bomb
-	 * number is increaed and the pickedUp method is called up.
+	 * Map object method. If the bomb-up is touched by a player, the players bomb
+	 * number is increased and the pickedUp method is called up.
 	 * 
 	 * @see #pickedUp()
 	 */

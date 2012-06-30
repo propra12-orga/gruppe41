@@ -18,7 +18,7 @@ import bomberman.objects.Moveable;
  */
 public class Block extends MapObject {
 	/**
-	 * Places a new blck onto the selcted position at the map.
+	 * Places a new block onto the selected position at the map.
 	 * 
 	 * @param map
 	 *            - The map to be added to.
@@ -38,7 +38,7 @@ public class Block extends MapObject {
 	}
 
 	/**
-	 * Always retusn true because no object can move through a wall.
+	 * Always return true because no object can move through a wall.
 	 */
 	public boolean isBlocking(Moveable m) {
 		return true;

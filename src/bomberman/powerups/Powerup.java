@@ -8,7 +8,7 @@ import bomberman.map.MapObject;
 import bomberman.sound.Sound;
 
 /**
- * Abstract superclass for powerups. Has several subclasses.
+ * Abstract superclass for power-ups. Has several subclasses.
  * 
  * @see bomberman.map.MapObject
  * @see bomberman.powerups.Bombup
@@ -57,7 +57,7 @@ public abstract class Powerup extends MapObject {
 	}
 
 	/**
-	 * Map object method. If a powerup is hit by an explosion, it vanishes.
+	 * Map object method. If a power-up is hit by an explosion, it vanishes.
 	 */
 	public void OnHurt() {
 		Die();

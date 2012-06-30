@@ -23,8 +23,9 @@ public class Menu {
 	private static final int BATTLE_SCREEN = 2;
 	private static final int SETTINGS_SCREEN = 3;
 	private static final int KEYBOARD_SETTINGS = 4;
+	
 	/**
-	 * The game screen, important to use the startCoreGame metho in game class.
+	 * The game screen, important to use the startCoreGame method in game class.
 	 */
 	private Game game;
 	/**
@@ -45,7 +46,7 @@ public class Menu {
 	 */
 	private static final String[][] items = {
 			{ "Start  Game", "Settings", "Exit" },
-			{ "Singleplayer", "Battle Game", "", "Back" },
+			{ "Singleplayer", "Battle Game", "Tutorial" , "" , "Back" },
 			{ "Player 1   ", "Player 2   ", "Player 3   ", "Player 4   " },
 			{ "Player ", "Back" },
 			{ "Up", "Down", "Left", "Right", "Action", "", "O.K." } };
@@ -68,7 +69,7 @@ public class Menu {
 	 */
 	private int count = items[0].length;
 	/**
-	 * The menu in foreground, game starts wich main menu.
+	 * The menu in foreground, game starts which main menu.
 	 */
 	private int menu = 0;
 	/**
@@ -85,7 +86,7 @@ public class Menu {
 	 */
 	private long blink_timer;
 	/**
-	 * Curren char for the animation when changing key settings.
+	 * Current char for the animation when changing key settings.
 	 */
 	private char blink_char;
 	/**
@@ -211,7 +212,12 @@ public class Menu {
 					players = new boolean[] { true, true, false, false };
 					Change(BATTLE_SCREEN);
 					break;
-				case 3:
+				case 2:
+					game.startCoreGame(CoreGame.TUTORIAL, null);
+					Change(TITLE_SCREEN);
+					break;
+					
+				case 4:
 					Change(TITLE_SCREEN);
 					break;
 				}
@@ -228,7 +234,7 @@ public class Menu {
 					Change(TITLE_SCREEN);
 					break;
 				} else {
-					Change(BATTLE_SCREEN);
+					
 					break;
 				}
 
@@ -281,7 +287,7 @@ public class Menu {
 	}
 
 	/**
-	 * Displayes the menu on the game screen.
+	 * Displays the menu on the game screen.
 	 * 
 	 * @param g
 	 *            - Graphics used to draw.

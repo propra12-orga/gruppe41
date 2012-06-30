@@ -26,7 +26,7 @@ public class Animation {
 	 * @param sprite_x
 	 *            - x position of the first image.
 	 * @param sprite_y
-	 *            - y position of the frist image.
+	 *            - y position of the first image.
 	 * @param width
 	 * @param height
 	 * @param num_of_sprites

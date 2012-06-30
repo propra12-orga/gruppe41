@@ -7,7 +7,7 @@ import bomberman.objects.Mob;
 import bomberman.objects.Moveable;
 
 /**
- * Abstract class. The following classes (and their subclasses) are sublasses of
+ * Abstract class. The following classes (and their subclasses) are subclasses of
  * MapObject:
  * 
  * @see bomberman.objects.Moveable
@@ -59,7 +59,7 @@ public abstract class MapObject {
 	}
 
 	/**
-	 * Short draw version, calls up ful method.
+	 * Short draw version, calls up full method.
 	 * 
 	 * @param g
 	 *            - Graphics.
@@ -96,7 +96,7 @@ public abstract class MapObject {
 	}
 
 	/**
-	 * This method return a boolean, true if another moveable cannot move throuw
+	 * This method return a boolean, true if another movable cannot move through
 	 * it, false if it is possible.
 	 * 
 	 * @return Returns false if not overwritten in subclasses.
@@ -107,10 +107,10 @@ public abstract class MapObject {
 
 	/**
 	 * This method will be overridden in subclasses. Tells what to do when
-	 * getting in contact with a moveable.
+	 * getting in contact with a movable.
 	 * 
 	 * @param m
-	 *            - The moveable touching the map object.
+	 *            - The movable touching the map object.
 	 * @param side
 	 *            - The direction/side of touching.
 	 */
@@ -119,8 +119,8 @@ public abstract class MapObject {
 	}
 
 	/**
-	 * This method will be overriden in subclasses. Tells what to do when
-	 * colliding with a moveable map object.
+	 * This method will be overwritten in subclasses. Tells what to do when
+	 * colliding with a movable map object.
 	 * 
 	 * @param m
 	 * @param side

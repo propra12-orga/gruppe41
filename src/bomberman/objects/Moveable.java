@@ -4,7 +4,7 @@ import bomberman.map.Map;
 import bomberman.map.MapObject;
 
 /**
- * Moeable objects on the map. This is the super class of mob and subclass of
+ * Movable objects on the map. This is the super class of mob and subclass of
  * map object.  TODO: explain methods
  * 
  * @see bomberman.map.MapObject

@@ -14,7 +14,7 @@ import bomberman.game.Game;
 import bomberman.objects.Moveable;
 
 /**
- * Class for the mpa in the core game. The terrain is saved in ground[][], all
+ * Class for the map in the core game. The terrain is saved in ground[][], all
  * objects on the map are saved in a vector.
  * 
  */
@@ -66,7 +66,7 @@ public class Map {
 	public Map(String name) {
 		try {
 			this.name = name;
-			this.path = "data/maps/" + name;
+			this.path = "data/maps/basic";
 
 			tile_ground = ImageIO.read(new File(path + "/tile_ground.png"));
 			border_top = ImageIO.read(new File(path + "/border_top.png"));

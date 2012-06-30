@@ -3,7 +3,7 @@ package bomberman.objects;
 import bomberman.map.Map;
 
 /**
- * Subclass of moveable, subclass of map object. Players are objects of this
+ * Subclass of movable, subclass of map object. Players are objects of this
  * type. This class only sets the render priority to 2.
  * 
  * @see bomberman.objects.Moveable
@@ -11,7 +11,7 @@ import bomberman.map.Map;
  */
 public class Mob extends Moveable {
 	/**
-	 * Calls up the super constructor moveable and sets the render priority to
+	 * Calls up the super constructor movable and sets the render priority to
 	 * 2.
 	 * 
 	 * @param map

@@ -18,7 +18,7 @@ import bomberman.objects.bomb.Bomb;
 import bomberman.sound.Sound;
 
 /**
- * The player class, extends mob extends moveable extends map object.
+ * The player class, extends mob extends movable extends map object.
  */
 public class Player extends Mob {
 	public static final int WIDTH = 40;
@@ -28,17 +28,17 @@ public class Player extends Mob {
 	 */
 	private Input input;
 	/**
-	 * The controls used for this player. Will be setted in mein menu.
+	 * The controls used for this player. Will be set in main menu.
 	 */
 	public int[] controls;
 
 	private long plantTimer = 0;
 	/**
-	 * States whethr the player is moving or not.
+	 * States whether the player is moving or not.
 	 */
 	private boolean moving = false;
 	/**
-	 * Number of bombs. Can be increased by bombups. There is no maximum limit.
+	 * Number of bombs. Can be increased by bomb-ups. There is no maximum limit.
 	 * 
 	 * @see bomberman.powerups.Bombup
 	 */
@@ -53,7 +53,7 @@ public class Player extends Mob {
 	public boolean canKickBombs = false;
 	/**
 	 * Only used in single player mode. If this boolean is true, the game ends
-	 * with a won message and a menu.
+	 * with a win-message and a menu.
 	 */
 	public boolean hasReachedExit = false;
 
@@ -120,7 +120,7 @@ public class Player extends Mob {
 
 	/**
 	 * Update method for player. Moves the player if necessary and plants bombs.
-	 * Also updates th players animation.
+	 * Also updates the players animation.
 	 */
 	public void Update() {
 		if (moving)
@@ -177,7 +177,7 @@ public class Player extends Mob {
 	}
 
 	/**
-	 * Creates a new bomb. Des not have any parameters. Position on the field is
+	 * Creates a new bomb. Does not have any parameters. Position on the field is
 	 * just the player's position.
 	 */
 	public void plantBomb() {
@@ -210,7 +210,7 @@ public class Player extends Mob {
 
 	/**
 	 * Spawning the player increases the number of players saved on the map.
-	 * Also ses movement speed to one.
+	 * Also increases movement speed by one.
 	 */
 	public void OnSpawn() {
 		this.map.num_of_players++;
@@ -227,7 +227,7 @@ public class Player extends Mob {
 		map.num_of_players--;
 	}
 	/**
-	 * Map object method. The plyaer dies if he got hit.
+	 * Map object method. The player dies if he got hit.
 	 * @see #Die()
 	 */
 	public void OnHurt() {

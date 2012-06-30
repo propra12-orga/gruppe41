@@ -11,7 +11,7 @@ import bomberman.objects.Moveable;
 import bomberman.players.Player;
 
 /**
- * The flameup increases the strength of the player and thus the radius of his
+ * The flame-up increases the strength of the player and thus the radius of his
  * bombs.
  * 
  * @see bomberman.powerups.Powerup
@@ -19,7 +19,7 @@ import bomberman.players.Player;
  */
 public class Flameup extends Powerup {
 	/**
-	 * Creates a new flameup item. See super constructor.
+	 * Creates a new flame-up item. See super constructor.
 	 * 
 	 * @param map
 	 * @param tile_x
@@ -38,7 +38,7 @@ public class Flameup extends Powerup {
 	}
 
 	/**
-	 * Map object method. If the bombup is touched by a player, the players
+	 * Map object method. If the bomb-up is touched by a player, the players
 	 * strength is increased and the pickedUp method is called up.
 	 * 
 	 * @see #pickedUp()

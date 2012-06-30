@@ -11,7 +11,7 @@ import bomberman.objects.Moveable;
 import bomberman.players.Player;
 
 /**
- * The kichup makes it possible to kick bombs whenever touching them.
+ * The kick-up makes it possible to kick bombs whenever touching them.
  * 
  * @see bomberman.powerups.Powerup
  * 
@@ -36,7 +36,7 @@ public class Kickup extends Powerup {
 	}
 
 	/**
-	 * Map object method. If the bombup is touched by a player, the players
+	 * Map object method. If the bomb-up is touched by a player, the players
 	 * canKickBombs boolean is set true and the pickedUp method is called up.
 	 * 
 	 * @see #pickedUp()

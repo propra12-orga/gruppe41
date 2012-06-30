@@ -14,7 +14,7 @@ import bomberman.players.Player;
 import bomberman.sound.Sound;
 
 /**
- * Bomb class extends moveable.
+ * Bomb class extends movable.
  * 
  * @see bomberman.objects.Moveable
  * 
@@ -24,7 +24,7 @@ public class Bomb extends Moveable {
 	 * The player who started this bomb.
 	 */
 	private Player player;
-	/*
+	/**
 	 * The bomb timer.
 	 */
 	public int seconds;
@@ -144,7 +144,7 @@ public class Bomb extends Moveable {
 	}
 
 	/**
-	 * Blows up any removeable object at the selected position. This method is
+	 * Blows up any removable object at the selected position. This method is
 	 * called up several times by update() when a bomb explodes.
 	 * 
 	 * @param tile_x
@@ -176,7 +176,7 @@ public class Bomb extends Moveable {
 
 	/**
 	 * Is blocking method, always returns true because a bomb will block other
-	 * ma objects trying to pass it.
+	 * map objects trying to pass it.
 	 */
 	public boolean isBlocking(Moveable m) {
 		return true;

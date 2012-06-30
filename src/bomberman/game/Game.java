@@ -44,10 +44,10 @@ public class Game extends Canvas {
 	 */
 	public static final int WIDTH = 800;
 	/**
-	 * The heigth of the game screen.
+	 * The height of the game screen.
 	 */
 	public static final int HEIGHT = 600;
-	/*
+	/**
 	 * Defines if the game is running. // TODO - what precisly?
 	 */
 	public boolean running = true;
@@ -172,7 +172,7 @@ public class Game extends Canvas {
 
 	/**
 	 * This method starts the core game by setting the "playing" boolean true
-	 * and ceating a new CoreGame instance.
+	 * and creating a new CoreGame instance.
 	 * 
 	 * @param gametype
 	 *            This <code>int</code> defines the game type, 0 = single player
@@ -182,7 +182,10 @@ public class Game extends Canvas {
 	 *            used. Must contain exactly four elements.
 	 */
 	public void startCoreGame(int gametype, boolean[] players) {
-		coregame = new CoreGame(this, input, "basic", gametype, players);
+		if (gametype==2){
+			coregame = new CoreGame(this, input, "tutorium", gametype, players);
+		}
+		else {coregame = new CoreGame(this, input, "basic", gametype, players);};
 		playing = true;
 	}
 

@@ -77,7 +77,7 @@ public class Rock extends MapObject {
 	}
 
 	/**
-	 * Map object method. When a rock gots hit by an explosion, the boolean
+	 * Map object method. When a rock got hit by an explosion, the boolean
 	 * "broken" is set true. Next update method will start the animation and
 	 * remove the rock later.
 	 */
@@ -86,7 +86,7 @@ public class Rock extends MapObject {
 	}
 
 	/**
-	 * Map object method. Calls up super method, removin the object from the
+	 * Map object method. Calls up super method, removing the object from the
 	 * map. After that, there are items placed onto the map or the exit is
 	 * shown.
 	 */
