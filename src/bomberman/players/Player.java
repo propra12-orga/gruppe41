@@ -23,18 +23,19 @@ import bomberman.sound.Sound;
 public class Player extends Mob {
 	public static final int WIDTH = 40;
 	public static final int HEIGHT = 60;
+
 	/**
 	 * Needs a connection to the keyboard input.
 	 */
 	private Input input;
 	/**
-	 * The controls used for this player. Will be setted in mein menu.
+	 * The controls used for this player. Will be setted in main menu.
 	 */
 	public int[] controls;
 
 	private long plantTimer = 0;
 	/**
-	 * States whethr the player is moving or not.
+	 * States whether the player is moving or not.
 	 */
 	private boolean moving = false;
 	/**
@@ -79,7 +80,6 @@ public class Player extends Mob {
 	 */
 	public Player(Input input, Map map, int tile_x, int tile_y, int player) {
 		super(map, tile_x, tile_y);
-
 		this.input = input;
 		this.controls = Game.controls[player];
 		this.player_id = player;
@@ -128,13 +128,13 @@ public class Player extends Mob {
 
 		int xa = 0, ya = 0;
 
-		if (input.keys[controls[0]].down)
+		if (input.get(controls[0]) || input.netget(0))
 			ya--;
-		if (input.keys[controls[1]].down)
+		if (input.get(controls[1]) || input.netget(1))
 			ya++;
-		if (input.keys[controls[2]].down)
+		if (input.get(controls[2]) || input.netget(2))
 			xa--;
-		if (input.keys[controls[3]].down)
+		if (input.get(controls[3]) || input.netget(3))
 			xa++;
 
 		int dir = Move(xa, ya)[0];
@@ -144,8 +144,10 @@ public class Player extends Mob {
 		} else
 			stopMoving();
 
-		if (input.keys[controls[4]].down)
+		if (input.get(controls[4])|| input.netget(4))
 			plantBomb();
+		if(input.netget(5))
+			Die();
 	}
 
 	/**
@@ -226,8 +228,10 @@ public class Player extends Mob {
 		map.Add(new PlayerBurnt(map, x, y));
 		map.num_of_players--;
 	}
+
 	/**
 	 * Map object method. The plyaer dies if he got hit.
+	 * 
 	 * @see #Die()
 	 */
 	public void OnHurt() {

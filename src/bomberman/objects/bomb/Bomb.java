@@ -61,7 +61,7 @@ public class Bomb extends Moveable {
 		super(map, tile_x, tile_y);
 
 		this.player = player;
-		this.movement_speed += 2;
+		this.movement_speed += 6;
 
 		try {
 			img = new Animation(

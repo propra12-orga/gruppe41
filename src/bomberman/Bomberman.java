@@ -11,16 +11,23 @@ import bomberman.game.Game;
  */
 public class Bomberman {
 	/**
-	 * 16 milliseconds per frame, that's 60 frames per second. Using this
+	 * 25 milliseconds per frame, that's 40 frames per second. Using this
 	 * constant slows the game and prevents it from being unequal fast on
 	 * different computers.
 	 */
-	private static final int MS_PER_FRAME = (1000 / 60);
+	private static final int MS_PER_FRAME = 25;
 	/**
 	 * Frames per second will be printed to console if this boolean is true.
 	 */
 	private static boolean show_fps = false;
 
+	private static Game bomberman;
+	/**
+	 * Makes the game accessable in all classes.
+	 */
+	public static Game getGame(){
+		return bomberman;
+	}
 	/**
 	 * Creates a Game instance and starts the main loop. The methods
 	 * game.update() and game.render() are used. The important information about
@@ -34,31 +41,34 @@ public class Bomberman {
 	 * @see bomberman.game.Game#Render()
 	 */
 	public static void main(String[] args) throws InterruptedException {
-		Game game = new Game();
+		bomberman = new Game();
 
+		long startTime = System.currentTimeMillis();
+		long gameTime = 0;
+		long realTime;
 		int frames = 0;
 		int ticks = 0;
 		long lastTimer = System.currentTimeMillis();
 
-		while (game.running) {
-			long timer1 = System.currentTimeMillis();
+		while (bomberman.running) {
+			
+			bomberman.Update();
+			bomberman.Render();
 
-			game.Update();
-			game.Render();
-
+			gameTime += MS_PER_FRAME;
 			frames++;
 			ticks++;
 
-			long timer2 = System.currentTimeMillis();
-			long timerdiff = timer2 - timer1;
+			realTime = System.currentTimeMillis()-startTime;
 
-			if (timerdiff > MS_PER_FRAME) {
-				for (int i = 0; i < timerdiff / MS_PER_FRAME; i++) {
-					game.Update();
+			if (gameTime < realTime) {
+				for (int i = 0; i < (realTime-gameTime) / MS_PER_FRAME; i++) {
+					bomberman.Update();
+					gameTime += MS_PER_FRAME;
 					ticks++;
 				}
-			} else if (timerdiff < MS_PER_FRAME) {
-				int sleep = (int) (MS_PER_FRAME - timerdiff);
+			} else if (realTime < gameTime) {
+				int sleep = (int) (gameTime-realTime);
 				Thread.sleep(sleep);
 			}
 
@@ -67,7 +77,7 @@ public class Bomberman {
 				frames = 0;
 				ticks = 0;
 				lastTimer = System.currentTimeMillis();
-			}//*/
+			}
 			Thread.sleep(1);
 		}
 	}

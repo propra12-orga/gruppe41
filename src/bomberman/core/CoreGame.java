@@ -5,19 +5,35 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 
 import bomberman.game.Game;
-import bomberman.input.Input;
+import bomberman.input.Keyboard;
 import bomberman.map.Map;
 import bomberman.map.MapObject;
+import bomberman.network.Connector;
 import bomberman.objects.terrain.Exit;
 import bomberman.players.Player;
 
 /**
- * Class for the game, excluding menu and stuff.
+ * Class for the game. Methods used by Bomberman#main to update and render the
+ * game or menu.
  * 
  */
 public class CoreGame {
+	/**
+	 * Starts a single player game with an exit.
+	 */
 	public static final int NORMAL_GAME = 0;
+	/**
+	 * Starts a local battle game with up to four players.
+	 */
 	public static final int BATTLE_GAME = 1;
+	/**
+	 * Starts a network game as host.
+	 */
+	public static final int NETWORK_GAME_HOST = 2;
+	/**
+	 * Starts a network game as client.
+	 */
+	public static final int NETWORK_GAME_CLIENT = 3;
 	/**
 	 * Reference to the game instance, used for startgame/endgame methods.
 	 */
@@ -27,7 +43,11 @@ public class CoreGame {
 	 * 
 	 * @see bomberman.input.Input
 	 */
-	private Input input;
+	private Keyboard input;
+	/**
+	 * The connector that controls the other player.
+	 */
+	private Connector netput;
 	/**
 	 * Game map.
 	 */
@@ -74,6 +94,9 @@ public class CoreGame {
 	 *            - The Game.
 	 * @param input
 	 *            - Keyboard input.
+	 * @param netput
+	 *            - The connector for a network game. Always null when playing
+	 *            local games.
 	 * @param mapname
 	 *            - The name of the map.
 	 * @param gametype
@@ -81,10 +104,12 @@ public class CoreGame {
 	 * @param players
 	 *            - Boolean array, a player will spawn for any true boolean.
 	 */
-	public CoreGame(Game game, Input input, String mapname, int gametype,
-			boolean[] players) {
+	public CoreGame(Game game, Keyboard input, Connector con, String mapname,
+			int gametype, boolean[] players) {
 		this.game = game;
 		this.input = input;
+		this.input.clear();
+		this.netput = con;
 		this.map = new Map(mapname);
 
 		this.gametype = gametype;
@@ -109,11 +134,25 @@ public class CoreGame {
 							Game.spawns[i][1], i));
 				}
 			}
+		} else if (gametype == NETWORK_GAME_HOST) {
+			map.Add(new Player(input, map, Game.spawns[0][0],
+					Game.spawns[0][1], 0));
+			map.Add(new Player(netput, map, Game.spawns[1][0],
+					Game.spawns[1][1], 1));
+		} else if (gametype == NETWORK_GAME_CLIENT) {
+			map.Add(new Player(netput, map, Game.spawns[0][0],
+					Game.spawns[0][1], 0));
+			map.Add(new Player(input, map, Game.spawns[1][0],
+					Game.spawns[1][1], 1));
+		} else {
+			System.err.println("Invalid Game Type.");
+			System.exit(0);
 		}
 	}
 
 	/**
-	 * Pauses the game and saves the system time when game was paused.
+	 * Pauses the game and saves the system time when game was paused. Not
+	 * supported in network mode.
 	 */
 	public void Pause() {
 		pauseTime = System.currentTimeMillis();
@@ -138,9 +177,9 @@ public class CoreGame {
 	public void UpdatePause() {
 		int sel = 0;
 
-		if (input.keys[KeyEvent.VK_DOWN].clicked)
+		if (input.use(KeyEvent.VK_DOWN))
 			sel++;
-		else if (input.keys[KeyEvent.VK_UP].clicked)
+		else if (input.use(KeyEvent.VK_UP))
 			sel--;
 
 		do {
@@ -153,7 +192,7 @@ public class CoreGame {
 
 		} while (menu[selected] == "");
 
-		if (input.keys[KeyEvent.VK_ENTER].clicked) {
+		if (input.use(KeyEvent.VK_ENTER)) {
 			switch (selected) {
 			case 0:
 				Resume();
@@ -172,7 +211,7 @@ public class CoreGame {
 				System.exit(0);
 				break;
 			}
-		} else if (input.keys[KeyEvent.VK_ESCAPE].clicked)
+		} else if (input.use(KeyEvent.VK_ESCAPE))
 			Resume();
 	}
 
@@ -220,9 +259,9 @@ public class CoreGame {
 	public void UpdateEnd() {
 		int sel = 0;
 
-		if (input.keys[KeyEvent.VK_DOWN].clicked)
+		if (input.use(KeyEvent.VK_DOWN))
 			sel++;
-		else if (input.keys[KeyEvent.VK_UP].clicked)
+		else if (input.use(KeyEvent.VK_UP))
 			sel--;
 
 		do {
@@ -235,22 +274,30 @@ public class CoreGame {
 
 		} while (end[selected] == "");
 
-		if (input.keys[KeyEvent.VK_ENTER].clicked) {
+		if (input.use(KeyEvent.VK_ENTER)) {
 			switch (selected) {
 			case 0:
 				if (gametype == NORMAL_GAME) {
 					game.startCoreGame(NORMAL_GAME, null);
 				} else if (gametype == BATTLE_GAME) {
 					game.startCoreGame(BATTLE_GAME, players);
+				} else if (gametype == NETWORK_GAME_HOST) {
+					netput.sayStart();
 				}
 				break;
 			case 1:
+				if (netput != null) {
+					netput.close();
+				}
 				System.exit(0);
 				break;
-
 			}
-		} else if (input.keys[KeyEvent.VK_ESCAPE].clicked)
+		} else if (input.use(KeyEvent.VK_ESCAPE)) {
 			game.stopCoreGame();
+			if (netput != null) {
+				netput.disconnect();
+			}
+		}
 	}
 
 	/**
@@ -330,7 +377,7 @@ public class CoreGame {
 				winner = 0;
 			else if (player.hasReachedExit)
 				winner = 1;
-		} else if (gametype == BATTLE_GAME) {
+		} else {
 			if (map.num_of_players < 2) {
 				for (MapObject o : map.objects) {
 					if (o instanceof Player)
@@ -338,8 +385,12 @@ public class CoreGame {
 				}
 			}
 		}
+		
+		if(1<gametype){
+			netput.update();
+		}
 
-		if (input.keys[KeyEvent.VK_ESCAPE].clicked)
+		if (input.use(KeyEvent.VK_ESCAPE) && gametype < 2)
 			Pause();
 
 	}

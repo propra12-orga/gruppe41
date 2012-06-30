@@ -12,12 +12,13 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import bomberman.core.CoreGame;
-import bomberman.input.Input;
+import bomberman.input.Keyboard;
 import bomberman.menu.Menu;
+import bomberman.network.Connector;
 
 /**
- * This class and it's methods are responsible for the whole game. An instance
- * of this class is created in main method. The constructor and the methods
+ * This class and its methods are responsible for the whole game. An instance of
+ * this class is created in main method. The constructor and the methods
  * update() and render() are used there, too. The Game class extends Canvas,
  * showing all graphics.
  * 
@@ -63,9 +64,14 @@ public class Game extends Canvas {
 	 */
 	private CoreGame coregame;
 	/**
-	 * This is an instance of the input class which defines the keyboard use.
+	 * This is an instance of the keyboard class which defines the keyboard
+	 * input.
 	 */
-	private Input input;
+	private Keyboard input;
+	/**
+	 * The connector used for network games.
+	 */
+	private Connector connector;
 	/**
 	 * Reference to the menu.
 	 */
@@ -81,7 +87,7 @@ public class Game extends Canvas {
 			{ KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT,
 					KeyEvent.VK_RIGHT, KeyEvent.VK_CONTROL },
 			{ KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D,
-					Input.VK_LCONTROL },
+					Keyboard.VK_LCONTROL },
 			{ KeyEvent.VK_I, KeyEvent.VK_K, KeyEvent.VK_J, KeyEvent.VK_L,
 					KeyEvent.VK_V },
 			{ KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD5, KeyEvent.VK_NUMPAD4,
@@ -124,12 +130,23 @@ public class Game extends Canvas {
 		strategy = getBufferStrategy();
 		this.graphics = (Graphics2D) strategy.getDrawGraphics();
 
-		input = new Input(this);
+		input = new Keyboard(this);
+		connector = null;
+		this.connector = null;
 		menu = new Menu(this, input);
 		this.Render();
 		window.setVisible(true);
 	}
 
+	public Menu getMenu() {
+		return this.menu;
+	}
+
+	public boolean isPlaying() {
+		return this.playing;
+	}
+
+	
 	/**
 	 * The update method is (lust like the render method) passed down to other
 	 * objects. In this case, the keyboard is also updated.
@@ -140,8 +157,6 @@ public class Game extends Canvas {
 	 * @see bomberman.game.Game#playing
 	 */
 	public void Update() {
-		input.Update();
-
 		if (playing)
 			coregame.Update();
 		else
@@ -182,7 +197,8 @@ public class Game extends Canvas {
 	 *            used. Must contain exactly four elements.
 	 */
 	public void startCoreGame(int gametype, boolean[] players) {
-		coregame = new CoreGame(this, input, "basic", gametype, players);
+		coregame = new CoreGame(this, input, connector, "basic", gametype,
+				players);
 		playing = true;
 	}
 
@@ -193,5 +209,15 @@ public class Game extends Canvas {
 	 */
 	public void stopCoreGame() {
 		playing = false;
+	}
+
+	/**
+	 * Sets a new connector, used by the menu when starting network games.
+	 * 
+	 * @param c
+	 *            - The new connector.
+	 */
+	public void setConnector(Connector c) {
+		this.connector = c;
 	}
 }
