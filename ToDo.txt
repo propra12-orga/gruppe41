@@ -1,0 +1,24 @@
+
+Dritter Meilstein:
+ - Pflicht:
+	* Bedienungsanleitung (offen, kann zuletzt erstellt werden)
+	* Netzwerkmodus für zwei Spieler (Baustelle)
+ - Zusatz:
+ 	* Items (vorhanden, 2 Punkte)
+ 	* Sound (vorhanden, 1 Punkt)
+ 	* Highscore (Venus und Arian, 2 Punkte)
+ 	* Karteneditor (2-5 Punkte)
+ 	* Browsergame (Timo, 2 Punkte)
+ 	* Tutorial (Kevin, 2 Punkte)
+
+Sonstiges/Optional:
+ * JavaDoc verbessern (TODO gesetzt, insbs. Moveable)
+ * Animation bei Spielertod startet nicht
+ * weitere Sounds (Hintergrundmusik?)
+ * einstellbare Droprate
+ * Kartenauswahl Mehrspieler
+ * Sprache auf Russisch umstellbar machen (Prof. Lindner hat ja mehrfach darauf hingewiesen)
+
+Zu meinen Änderungen im Bereich Netzwerk siehe Changes.txt
+ 
+ Zuletzt geändert: 2012-06-30, Philipp
