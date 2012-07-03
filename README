@@ -1,0 +1,46 @@
+
+external files:
+  When executing the project as an application, the external files (in specific: the data-folder with its content) has to be located in the working directory
+  (equal to "System.getProperty("user.dir")"; meant is the same directory in which the .jar-file is located), e.g.:
+
+    bomberman
+    |
+    +-data
+    | |
+    | +-maps
+    | | |
+    | | +-...
+    | +-sounds
+    | | |
+    | | +-...
+    | |
+    | +-sprites
+    |   |
+    |   +-...
+    |
+    +-bomberman.jar
+
+  When executing the project as an applet, the external files has to be located in the parent directory, e.g.:
+
+    bomberman
+    |
+    +-data
+    | |
+    | +-maps
+    | | |
+    | | +-...
+    | +-sounds
+    | | |
+    | | +-...
+    | |
+    | +-sprites
+    |   |
+    |   +-...
+    |
+    +-bin
+      |
+      +-bomberman.html
+      |
+      +-bomberman.jar
+
+  The size of the applet can be changed in the run configuration when executing it with eclipse.

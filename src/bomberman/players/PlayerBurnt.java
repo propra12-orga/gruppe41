@@ -1,18 +1,17 @@
 package bomberman.players;
 
 import java.awt.Graphics2D;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
 
 import bomberman.animation.Animation;
 import bomberman.map.Map;
 import bomberman.map.MapObject;
+import bomberman.resource.Image;
+
 /**
  * An object of this type shows a dying player. Does not work in the game.
+ * 
  * @see bomberman.map.MapObject
- *
+ * 
  */
 public class PlayerBurnt extends MapObject
 {
@@ -32,14 +31,7 @@ public class PlayerBurnt extends MapObject
 
 		this.render_priority = 3;
 
-		try
-		{
-			img = new Animation(ImageIO.read(new File("data/sprites/burnt.png")), 0, 0, WIDTH, HEIGHT, 5, 100, false);
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+		img = new Animation(Image.read("data/sprites/burnt.png"), 0, 0, WIDTH, HEIGHT, 5, 100, false);
 	}
 
 	public void Update()

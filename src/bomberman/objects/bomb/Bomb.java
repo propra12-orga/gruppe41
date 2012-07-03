@@ -1,17 +1,14 @@
 package bomberman.objects.bomb;
 
 import java.awt.Graphics2D;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
 
 import bomberman.animation.Animation;
 import bomberman.map.Map;
 import bomberman.map.MapObject;
 import bomberman.objects.Moveable;
 import bomberman.players.Player;
-import bomberman.sound.Sound;
+import bomberman.resource.Image;
+import bomberman.resource.Sound;
 
 /**
  * Bomb class extends movable.
@@ -19,71 +16,64 @@ import bomberman.sound.Sound;
  * @see bomberman.objects.Moveable
  * 
  */
-public class Bomb extends Moveable {
+public class Bomb extends Moveable
+{
 	/**
 	 * The player who started this bomb.
 	 */
-	private Player player;
+	private Player		player;
 	/**
 	 * The bomb timer.
 	 */
-	public int seconds;
+	public int			seconds;
 	/**
 	 * The explosion radius.
 	 */
-	public int radius;
+	public int			radius;
 	/**
 	 * 
 	 */
-	public boolean isExploding;
+	public boolean		isExploding;
 	/**
 	 * Is true if the bomb was kicked.
 	 */
-	private boolean moving = false;
-	private int move_x, move_y;
+	private boolean		moving	= false;
+	private int			move_x, move_y;
 	/**
 	 * The animation showing the ticking bomb.
 	 */
-	private Animation img;
+	private Animation	img;
 
 	/**
 	 * 
-	 * @param player
-	 *            - The player who owns this bomb.
-	 * @param map
-	 *            - The map the bomb has to be added to.
-	 * @param tile_x
-	 *            - x position on the map.
-	 * @param tile_y
-	 *            - y position on the map.
+	 * @param player - The player who owns this bomb.
+	 * @param map - The map the bomb has to be added to.
+	 * @param tile_x - x position on the map.
+	 * @param tile_y - y position on the map.
 	 */
-	public Bomb(Player player, Map map, int tile_x, int tile_y) {
+	public Bomb(Player player, Map map, int tile_x, int tile_y)
+	{
 		super(map, tile_x, tile_y);
 
 		this.player = player;
 		this.movement_speed += 2;
 
-		try {
-			img = new Animation(
-					ImageIO.read(new File("data/sprites/bomb.png")), 0, 0,
-					WIDTH, HEIGHT, 3, 250, true, 1);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		img = new Animation(Image.read("data/sprites/bomb.png"), 0, 0, WIDTH, HEIGHT, 3, 250, true, 1);
 
 		OnSpawn();
 	}
 
 	/**
-	 * Update method for bombs, updates the animation, moves the bomb if it was
-	 * kicked and blows it up if the time is up. There will be created a flame
-	 * object and the bomb is removed.
+	 * Update method for bombs, updates the animation, moves the bomb if it was kicked and blows it up if the time is up. There will be created a flame object and the bomb is removed.
 	 */
-	public void Update() {
+	public void Update()
+	{
 		img.Update();
 
-		if (moving) {
-			if (Move(move_x, move_y)[1] == 0) {
+		if (moving)
+		{
+			if (Move(move_x, move_y)[1] == 0)
+			{
 				moving = false;
 				move_y = 0;
 				move_x = 0;
@@ -92,7 +82,8 @@ public class Bomb extends Moveable {
 
 		int radius = this.radius + 1;
 
-		if (System.currentTimeMillis() - creationTime > seconds * 1000) {
+		if (System.currentTimeMillis() - creationTime > seconds * 1000)
+		{
 			int tile_x = getXTile(), tile_y = getYTile();
 
 			isExploding = true;
@@ -100,36 +91,36 @@ public class Bomb extends Moveable {
 			explode(tile_x, tile_y);
 			map.Add(new Flame(map, tile_x, tile_y, Flame.FLAMES_MID));
 
-			for (int xx = tile_x - 1; xx > tile_x - radius; xx--) {
+			for (int xx = tile_x - 1; xx > tile_x - radius; xx--)
+			{
 				if (!explode(xx, tile_y))
 					break;
 				else
-					map.Add(new Flame(map, xx, tile_y, (xx > tile_x - radius
-							+ 1) ? Flame.FLAMES_LEFT : Flame.FLAMES_LEFT_EDGE));
+					map.Add(new Flame(map, xx, tile_y, (xx > tile_x - radius + 1) ? Flame.FLAMES_LEFT : Flame.FLAMES_LEFT_EDGE));
 			}
 
-			for (int xx = tile_x + 1; xx < tile_x + radius; xx++) {
+			for (int xx = tile_x + 1; xx < tile_x + radius; xx++)
+			{
 				if (!explode(xx, tile_y))
 					break;
 				else
-					map.Add(new Flame(map, xx, tile_y, (xx < tile_x + radius
-							- 1) ? Flame.FLAMES_RIGHT : Flame.FLAMES_RIGHT_EDGE));
+					map.Add(new Flame(map, xx, tile_y, (xx < tile_x + radius - 1) ? Flame.FLAMES_RIGHT : Flame.FLAMES_RIGHT_EDGE));
 			}
 
-			for (int yy = tile_y - 1; yy > tile_y - radius; yy--) {
+			for (int yy = tile_y - 1; yy > tile_y - radius; yy--)
+			{
 				if (!explode(tile_x, yy))
 					break;
 				else
-					map.Add(new Flame(map, tile_x, yy, (yy > tile_y - radius
-							+ 1) ? Flame.FLAMES_TOP : Flame.FLAMES_TOP_EDGE));
+					map.Add(new Flame(map, tile_x, yy, (yy > tile_y - radius + 1) ? Flame.FLAMES_TOP : Flame.FLAMES_TOP_EDGE));
 			}
 
-			for (int yy = tile_y + 1; yy < tile_y + radius; yy++) {
+			for (int yy = tile_y + 1; yy < tile_y + radius; yy++)
+			{
 				if (!explode(tile_x, yy))
 					break;
 				else
-					map.Add(new Flame(map, tile_x, yy, (yy < tile_y + radius
-							- 1) ? Flame.FLAMES_BOT : Flame.FLAMES_BOT_EDGE));
+					map.Add(new Flame(map, tile_x, yy, (yy < tile_y + radius - 1) ? Flame.FLAMES_BOT : Flame.FLAMES_BOT_EDGE));
 			}
 
 			Die();
@@ -139,31 +130,30 @@ public class Bomb extends Moveable {
 	/**
 	 * Renders the bomb by rendering the animation.
 	 */
-	public void Render(Graphics2D g) {
+	public void Render(Graphics2D g)
+	{
 		img.Render(g, x, y);
 	}
 
 	/**
-	 * Blows up any removable object at the selected position. This method is
-	 * called up several times by update() when a bomb explodes.
+	 * Blows up any removable object at the selected position. This method is called up several times by update() when a bomb explodes.
 	 * 
-	 * @param tile_x
-	 *            - x position on the map.
-	 * @param tile_y
-	 *            - y position on the map.
+	 * @param tile_x - x position on the map.
+	 * @param tile_y - y position on the map.
 	 * @return false if impossible (blocked by a wall) or else true.
 	 * 
 	 * @see bomberman.objects.bomb.Bomb#Update()
 	 */
-	private boolean explode(int tile_x, int tile_y) {
-		if (tile_x < 0 || tile_x > Map.TILES_COUNT_X - 1 || tile_y < 0
-				|| tile_y > Map.TILES_COUNT_Y - 1)
+	private boolean explode(int tile_x, int tile_y)
+	{
+		if (tile_x < 0 || tile_x > Map.TILES_COUNT_X - 1 || tile_y < 0 || tile_y > Map.TILES_COUNT_Y - 1)
 			return false;
 
 		boolean ret = true;
 		MapObject[] ol = map.getObjectsOnTile(tile_x, tile_y);
 
-		for (MapObject o : ol) {
+		for (MapObject o : ol)
+		{
 			if (o == this)
 				continue;
 			if (o.isBlocking(this))
@@ -175,43 +165,44 @@ public class Bomb extends Moveable {
 	}
 
 	/**
-	 * Is blocking method, always returns true because a bomb will block other
-	 * map objects trying to pass it.
+	 * Is blocking method, always returns true because a bomb will block other map objects trying to pass it.
 	 */
-	public boolean isBlocking(Moveable m) {
+	public boolean isBlocking(Moveable m)
+	{
 		return true;
 	}
 
-	public void OnHurt() {
+	public void OnHurt()
+	{
 		this.seconds = 0;
 	}
 
 	/**
-	 * Initializes the bomb, sets the timer to three seconds and sets the radius
-	 * to the player's bomb strength.
+	 * Initializes the bomb, sets the timer to three seconds and sets the radius to the player's bomb strength.
 	 */
-	public void OnSpawn() {
+	public void OnSpawn()
+	{
 		this.seconds = 3;
 		this.radius = player.strength;
 	}
 
 	/**
-	 * Die method for bomb, calls up super method and plays the explosion sound.
-	 * The players number of available bombs is increased by one.
+	 * Die method for bomb, calls up super method and plays the explosion sound. The players number of available bombs is increased by one.
 	 * 
-	 * @see bomberman.sound.Sound#play()
+	 * @see bomberman.resource.Sound#play()
 	 */
-	public void Die() {
+	public void Die()
+	{
 		super.Die();
 		Sound.explosion.play();
 		this.player.bombs++;
 	}
 
 	/**
-	 * Method used when colliding with another object. Bomb will be moved if the
-	 * object is a player and can kick bombs.
+	 * Method used when colliding with another object. Bomb will be moved if the object is a player and can kick bombs.
 	 */
-	public void OnCollide(Moveable m, int side) {
+	public void OnCollide(Moveable m, int side)
+	{
 		if (moving || (m instanceof Player && !((Player) m).canKickBombs))
 			return;
 
