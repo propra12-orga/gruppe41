@@ -3,6 +3,13 @@ package bomberman.core;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Scanner;
 
 import bomberman.game.Game;
 import bomberman.input.Keyboard;
@@ -45,6 +52,8 @@ public class CoreGame
 	 * Reference to the game instance, used for startgame/endgame methods.
 	 */
 	private Game			game;
+	
+	public static final int HSS         = 5;
 
 	private int				tutorialcount		= 0;
 	/**
@@ -81,6 +90,11 @@ public class CoreGame
 	private boolean			rock_destroyed3		= true;
 	private boolean			rock_destroyed4		= true;
 	private boolean			rock_destroyed5		= true;
+	
+	/**
+	   * the highscore Time
+	   */
+	private long      highscore;
 
 	private long			tutoringTime;
 	/**
@@ -154,6 +168,7 @@ public class CoreGame
 		this.input.clear();
 		this.netput = con;
 		this.map = new Map(mapname);
+		this.highscore = System.currentTimeMillis();
 
 		this.gametype = gametype;
 		this.players = players;
@@ -271,6 +286,7 @@ public class CoreGame
 		if (paused == true)
 		{
 			long pausedTime = System.currentTimeMillis() - pauseTime;
+			 highscore += pausedTime;
 			for (MapObject o : map.objects)
 			{
 				o.creationTime += pausedTime;
@@ -751,11 +767,15 @@ public class CoreGame
 				winner = 0;
 			else if (player.hasReachedExit)
 				winner = 1;
+				highscore = System.currentTimeMillis() - highscore;
+				writehs();
 		}
 		else if (gametype == BATTLE_GAME)
 		{
 			if (map.num_of_players < 2)
 			{
+				highscore = System.currentTimeMillis() - highscore;
+				writehs();
 				for (MapObject o : map.objects)
 				{
 					if (o instanceof Player)
@@ -807,5 +827,118 @@ public class CoreGame
 				RenderTutoring(g);
 			}
 		}
+	}
+
+	/**
+	 * Write Highscore into textfile
+	 */
+	private void writehs()
+	{
+		File hsfile = new File("highscore.txt");
+		boolean nhs = false; // new highscore?
+		Scanner in = null;
+		FileWriter out = null;
+		String hs[] = new String[HSS]; // the highscore-file
+		int linesread = -1;
+
+		try
+		{
+			in = new Scanner(hsfile);
+			for (int i = 0; i < HSS; i++)
+			{ // Save File in hs
+				if (in.hasNextLine())
+				{
+					linesread++;
+					hs[i] = in.nextLine();
+				}
+				else
+					hs[i] = (char) 255 + ""; // Beacause otherwise Arrays.sort() don't work
+
+			}
+			if (linesread == HSS - 1)// Highscore-List full
+			{
+				for (int i = 0; i < HSS; i++)
+				{ // Check: new highscore?
+					if (hs[i] != null)
+					{
+						Scanner tmp = new Scanner(hs[i]);
+						if (tmp.hasNextLong())
+						{
+							if (tmp.nextLong() > highscore)
+							{// New Highscore
+								hs[linesread] = highscore + " " + new Date();
+								nhs = true;
+								break;
+							}
+						}
+					}
+				}
+
+			}
+			// Highscore-List not full add any highscore
+			else
+			{
+				hs[++linesread] = highscore + " " + new Date();
+				nhs = true;
+			}
+			Arrays.sort(hs);
+
+		}
+		catch (FileNotFoundException e)
+		{
+			// No HS-File exists
+			hs[0] = highscore + " " + new Date();
+			linesread = 0;
+			nhs = true;
+
+		}
+		finally
+		{
+			if (in != null)
+			{
+				in.close();
+			}
+		}
+		// Write new Highscore-File
+		if (nhs)
+		{
+			if (hsfile.exists())
+				if (!hsfile.delete()) return;
+			try
+			{
+				out = new FileWriter(hsfile);
+				for (int i = 0; i <= linesread; i++)
+				{
+					out.write(hs[i] + System.getProperty("line.separator"));
+				}
+
+			}
+			catch (FileNotFoundException e)
+			{
+				// No HS-File could created
+				return;
+			}
+			catch (IOException e)
+			{
+				// IO-Error
+				return;
+			}
+			finally
+			{
+				if (out != null)
+				{
+					try
+					{
+						out.close();
+					}
+					catch (IOException e)
+					{
+						// IO-Error
+						return;
+					}
+				}
+			}
+		}
+
 	}
 }

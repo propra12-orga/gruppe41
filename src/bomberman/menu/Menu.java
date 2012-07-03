@@ -1,9 +1,11 @@
 package bomberman.menu;
 
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
 
 import bomberman.core.CoreGame;
 import bomberman.game.Game;
@@ -49,7 +51,7 @@ public class Menu
 	 * Two dimensional array containing the menu items. First index is the selected menu, the second one is the number on the current menu screen.
 	 */
 	private static final String[][]	items				= {
-														{ "Start  Game", "Key Settings", "Exit" },
+														{ "Start  Game", "Key Settings", "Exit" , "Highscore"},
 														{ "Singleplayer", "Local Battle", "Network Duel", "Tutorial", "Back" },
 														{ "Player 1   ", "Player 2   ", "Player 3   ", "Player 4   " },
 														{ "Player ", "Back" },
@@ -259,6 +261,16 @@ public class Menu
 						case 2:
 							System.exit(0);
 							break;
+						case 3:
+					          try
+					          {
+
+					            Desktop.getDesktop().open( new File("highscore.txt") );
+					          }
+					          catch ( Exception /* IOException, URISyntaxException */ e )
+					          {
+					            e.printStackTrace();
+					          }
 					}
 					break;
 				case GAME_SCREEN:
