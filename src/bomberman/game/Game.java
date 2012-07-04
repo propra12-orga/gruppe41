@@ -6,10 +6,16 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 
+import bomberman.core.BattleGame;
+import bomberman.core.ClientGame;
 import bomberman.core.CoreGame;
+import bomberman.core.ServerGame;
+import bomberman.core.SingleGame;
+import bomberman.core.TutorialGame;
 import bomberman.input.Keyboard;
 import bomberman.menu.Menu;
-import bomberman.network.Connector;
+import bomberman.network.Client;
+import bomberman.network.Server;
 
 /**
  * This class and its methods are responsible for the whole game. An instance of this class is created in main method. The constructor and the methods update() and render() are used there, too. The Game class extends Canvas, showing all graphics.
@@ -61,10 +67,6 @@ public class Game extends Canvas implements Runnable
 	 * This is an instance of the keyboard class which defines the keyboard input.
 	 */
 	private Keyboard			input;
-	/**
-	 * The connector used for network games.
-	 */
-	private Connector			connector			= null;
 	/**
 	 * Reference to the menu.
 	 */
@@ -164,19 +166,33 @@ public class Game extends Canvas implements Runnable
 		strategy.show();
 	}
 
-	/**
-	 * This method starts the core game by setting the "playing" boolean true and creating a new CoreGame instance.
-	 * 
-	 * @param gametype This <code>integer</code> defines the game type, 0 = single player game, 1 = multiplayer game. Another game type will come soon.
-	 * @param players This <code>boolean</code> array decides which players are used. Must contain exactly four elements.
-	 */
-	public void startCoreGame(int gametype, boolean[] players)
+	public void startNormalGame()
 	{
-		if (gametype == 2)
-			coregame = new CoreGame(this, input, connector, "tutorium", gametype, players);
-		else
-			coregame = new CoreGame(this, input, connector, "basic", gametype, players);
+		coregame = new SingleGame(this, input);
+		playing = true;
+	}
 
+	public void startBattleGame(boolean[] players)
+	{
+		coregame = new BattleGame(this, input, players);
+		playing = true;
+	}
+
+	public void startTutorial()
+	{
+		coregame = new TutorialGame(this, input);
+		playing = true;
+	}
+
+	public void startServerGame(Server con)
+	{
+		coregame = new ServerGame(this, input, con);
+		playing = true;
+	}
+
+	public void startClientGame(Client con)
+	{
+		coregame = new ClientGame(this, input, con);
 		playing = true;
 	}
 
@@ -186,16 +202,6 @@ public class Game extends Canvas implements Runnable
 	public void stopCoreGame()
 	{
 		playing = false;
-	}
-
-	/**
-	 * Sets a new connector, used by the menu when starting network games.
-	 * 
-	 * @param c - The new connector.
-	 */
-	public void setConnector(Connector c)
-	{
-		this.connector = c;
 	}
 
 	@Override

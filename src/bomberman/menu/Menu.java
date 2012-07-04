@@ -1,13 +1,12 @@
 package bomberman.menu;
 
+import highscore.Highscore;
+
 import java.awt.Color;
-import java.awt.Desktop;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
 
-import bomberman.core.CoreGame;
 import bomberman.game.Game;
 import bomberman.input.Keyboard;
 import bomberman.network.Client;
@@ -27,35 +26,21 @@ public class Menu
 	private static final int		BATTLE_SCREEN		= 2;
 	private static final int		SETTINGS_SCREEN		= 3;
 	private static final int		KEYBOARD_SETTINGS	= 4;
-	private static final int		NETWORK_SCREEN		= 5;
-	private static final int		SERVER_SCREEN		= 6;
-	private static final int		CLIENT_SCREEN		= 7;
-	private static final int		NET_SETTINGS		= 8;
-	/**
-	 * The game screen, important to use the startCoreGame method in game class.
-	 */
-	private Game					game;
-	/**
-	 * The keyboard input used by the game.
-	 */
-	private Keyboard				input;
-	/**
-	 * The logo is shown in the left bottom corner of the menu.
-	 */
-	private BufferedImage			logo;
-	/**
-	 * The title "Bomberman" on the start screen.
-	 */
-	private BufferedImage			title;
+	private static final int		HIGHSCORE			= 5;
+	private static final int		NETWORK_SCREEN		= 6;
+	private static final int		SERVER_SCREEN		= 7;
+	private static final int		CLIENT_SCREEN		= 8;
+	private static final int		NET_SETTINGS		= 9;
 	/**
 	 * Two dimensional array containing the menu items. First index is the selected menu, the second one is the number on the current menu screen.
 	 */
 	private static final String[][]	items				= {
-														{ "Start  Game", "Key Settings", "Exit" , "Highscore"},
+														{ "Start  Game", "Key Settings", "Highscore", "Exit" },
 														{ "Singleplayer", "Local Battle", "Network Duel", "Tutorial", "Back" },
 														{ "Player 1   ", "Player 2   ", "Player 3   ", "Player 4   " },
 														{ "Player ", "Back" },
 														{ "Up", "Down", "Left", "Right", "Action", "", "O.K." },
+														{ "Reset Highscore", "Back" },
 														{ "Host Game", "Find Game", "Settings", "Back" },
 														{ "Start", "Back" },
 														{ "I'm ready!", "Back" },
@@ -94,6 +79,22 @@ public class Menu
 	 * Saves which players are selected when starting a multiplayer game.
 	 */
 	private static boolean[]		players;
+	/**
+	 * The game screen, important to use the startCoreGame method in game class.
+	 */
+	private Game					game;
+	/**
+	 * The keyboard input used by the game.
+	 */
+	private Keyboard				input;
+	/**
+	 * The logo is shown in the left bottom corner of the menu.
+	 */
+	private BufferedImage			logo;
+	/**
+	 * The title "Bomberman" on the start screen.
+	 */
+	private BufferedImage			title;
 	/**
 	 * The number of the currently selected item at the menu.
 	 */
@@ -259,25 +260,19 @@ public class Menu
 							Change(SETTINGS_SCREEN);
 							break;
 						case 2:
-							System.exit(0);
+							Change(HIGHSCORE);
+							Highscore.readHighscore();
 							break;
 						case 3:
-					          try
-					          {
-
-					            Desktop.getDesktop().open( new File("highscore.txt") );
-					          }
-					          catch ( Exception /* IOException, URISyntaxException */ e )
-					          {
-					            e.printStackTrace();
-					          }
+							System.exit(0);
+							break;
 					}
 					break;
 				case GAME_SCREEN:
 					switch (selected)
 					{
 						case 0:
-							game.startCoreGame(CoreGame.NORMAL_GAME, null);
+							game.startNormalGame();
 							Change(TITLE_SCREEN);
 							break;
 						case 1:
@@ -288,7 +283,7 @@ public class Menu
 							Change(NETWORK_SCREEN);
 							break;
 						case 3:
-							game.startCoreGame(CoreGame.TUTORIAL, null);
+							game.startTutorial();
 							Change(TITLE_SCREEN);
 							break;
 
@@ -309,7 +304,7 @@ public class Menu
 					}
 					if (headcounter >= 2)
 					{
-						game.startCoreGame(CoreGame.BATTLE_GAME, players);
+						game.startBattleGame(players);
 						Change(TITLE_SCREEN);
 						break;
 					}
@@ -347,6 +342,17 @@ public class Menu
 							break;
 					}
 					break;
+				case HIGHSCORE:
+					switch (selected)
+					{
+						case 0:
+							Highscore.resetHighscore();
+							break;
+						case 1:
+							Change(TITLE_SCREEN);
+							break;
+					}
+					break;
 				case NETWORK_SCREEN:
 					switch (selected)
 					{
@@ -355,7 +361,6 @@ public class Menu
 							if (network != null)
 							{
 								net_status = 1;
-								game.setConnector(network);
 							}
 							Change(SERVER_SCREEN);
 							break;
@@ -364,7 +369,6 @@ public class Menu
 							if (network != null)
 							{
 								net_status = 1;
-								game.setConnector(network);
 							}
 							Change(CLIENT_SCREEN);
 							break;
@@ -454,6 +458,9 @@ public class Menu
 					break;
 				case NET_SETTINGS:
 					Change(NETWORK_SCREEN);
+					break;
+				case HIGHSCORE:
+					Change(TITLE_SCREEN);
 					break;
 			}
 		}
@@ -579,7 +586,7 @@ public class Menu
 			network = null;
 		}
 		net_status = 0;
-		game.setConnector(null);
 		Change(NETWORK_SCREEN);
 	}
+
 }

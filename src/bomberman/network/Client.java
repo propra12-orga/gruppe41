@@ -9,7 +9,6 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import bomberman.Bomberman;
-import bomberman.core.CoreGame;
 import bomberman.game.Game;
 import bomberman.input.Keyboard;
 
@@ -230,7 +229,7 @@ public class Client extends Connector
 	{
 		sayStart();
 		status = 4;
-		Bomberman.getGame().startCoreGame(CoreGame.NETWORK_GAME_CLIENT, new boolean[] { true, true, false, false });
+		Bomberman.getGame().startClientGame(this);
 	}
 
 	public void sayReady()
