@@ -6,7 +6,6 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 
-import bomberman.Bomberman;
 import bomberman.core.BattleGame;
 import bomberman.core.ClientGame;
 import bomberman.core.CoreGame;

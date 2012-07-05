@@ -157,7 +157,7 @@ public class Menu
 		this.net_status = 0;
 
 		title = Image.read("data/sprites/title.png");
-		logo = Image.read("data/sprites/logo_" + ((int) (Math.random() * 3 + 1)) + ".png");
+		// logo = Image.read("data/sprites/logo_" + ((int) (Math.random() * 3 + 1)) + ".png");
 	}
 
 	/**
@@ -168,8 +168,8 @@ public class Menu
 	private void Change(int menu)
 	{
 		this.input.clear();
-		this.menu = menu;
 		this.selected = 0;
+		this.menu = menu;
 		this.count = items[menu].length;
 	}
 
@@ -363,6 +363,7 @@ public class Menu
 							Change(SETTINGS_SCREEN);
 							break;
 						case 2:
+							logo = Image.read("data/sprites/logo_" + ((int) (Math.random() * 3 + 1)) + ".png");
 							Change(HIGHSCORE);
 							Highscore.readHighscore();
 							break;
@@ -714,9 +715,9 @@ public class Menu
 				g.drawString(CLIENT_MESSAGES[net_status], 25, Game.HEIGHT - 25);
 				break;
 			default:
-				//w = logo.getWidth();
-				//h = logo.getHeight();
-				//g.drawImage(logo, 0, Game.HEIGHT - h, w, Game.HEIGHT, 0, 0, w, h, null);
+				// w = logo.getWidth();
+				// h = logo.getHeight();
+				// g.drawImage(logo, 0, Game.HEIGHT - h, w, Game.HEIGHT, 0, 0, w, h, null);
 				break;
 		}
 
