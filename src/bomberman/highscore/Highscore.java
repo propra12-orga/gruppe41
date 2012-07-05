@@ -8,15 +8,34 @@ import java.io.InputStreamReader;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+import bomberman.Bomberman;
+
 public class Highscore
 {
-	public static final int	HSS			= 5;
-	public static int[]		points		= new int[HSS];
-	public static String[]	names		= new String[HSS];
-	public static String	playerName	= "HANS";
+	private static final String	APPLET_ERR_MSG	= "Highscore-related functions are ignored when being run in an applet.";	// Applets do not have io-permissions
+
+	public static final int		HSS				= 5;
+	public static int[]			points			= new int[HSS];
+	public static String[]		names			= new String[HSS];
+	public static String		playerName		= "USER";
+
+	public static void initHighscore()
+	{
+		for (int i = 0; i < HSS; i++)
+		{
+			points[i] = 0;
+			names[i] = "";
+		}
+	}
 
 	public static void resetHighscore()
 	{
+		if (Bomberman.isApplet)
+		{
+			System.out.println(APPLET_ERR_MSG);
+			return;
+		}
+
 		File high = new File("data/highscore");
 		if (high.exists())
 		{
@@ -39,6 +58,12 @@ public class Highscore
 
 	public static void readHighscore()
 	{
+		if (Bomberman.isApplet)
+		{
+			System.out.println(APPLET_ERR_MSG);
+			return;
+		}
+
 		File high = new File("data/highscore");
 		Scanner highread;
 		if (high.exists())
@@ -78,6 +103,12 @@ public class Highscore
 
 	public static void writeHighscore(long millis)
 	{
+		if (Bomberman.isApplet)
+		{
+			System.out.println(APPLET_ERR_MSG);
+			return;
+		}
+
 		boolean changed = false;
 		int point = 120 - (int) (millis / 1000);
 		int position = HSS;
@@ -119,18 +150,30 @@ public class Highscore
 
 	public static void readName()
 	{
+		if (Bomberman.isApplet)
+		{
+			System.out.println(APPLET_ERR_MSG);
+			return;
+		}
+
 		try
 		{
 			playerName = (new Scanner(new InputStreamReader(new FileInputStream(new File("data/name"))))).next();
 		}
 		catch (IOException | NoSuchElementException e)
 		{
-			playerName = "HANS";
+			playerName = "USER";
 		}
 	}
 
 	public static void writeName()
 	{
+		if (Bomberman.isApplet)
+		{
+			System.out.println(APPLET_ERR_MSG);
+			return;
+		}
+
 		File name = new File("data/name");
 		try
 		{

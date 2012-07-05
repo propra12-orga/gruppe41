@@ -29,7 +29,7 @@ public class PlayerBurnt extends MapObject
 		this.x = x;
 		this.y = y;
 
-		this.render_priority = 3;
+		this.render_priority = 2;
 
 		img = new Animation(Image.read("data/sprites/burnt.png"), 0, 0, WIDTH, HEIGHT, 5, 100, false);
 	}

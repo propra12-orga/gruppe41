@@ -116,11 +116,9 @@ public class Game extends Canvas implements Runnable
 		input = new Keyboard(this);
 		menu = new Menu(this, input);
 
-		if (Bomberman.isApplication) // Applets do not have io-permissions
-		{
-			Highscore.readHighscore();
-			Highscore.readName();
-		}
+		Highscore.initHighscore();
+		Highscore.readHighscore();
+		Highscore.readName();
 	}
 
 	public void start()
