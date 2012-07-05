@@ -16,7 +16,9 @@ import bomberman.highscore.Highscore;
 import bomberman.input.Keyboard;
 import bomberman.menu.Menu;
 import bomberman.network.Client;
+import bomberman.network.Connector;
 import bomberman.network.Server;
+import bomberman.objects.terrain.Rock;
 
 /**
  * This class and its methods are responsible for the whole game. An instance of this class is created in main method. The constructor and the methods update() and render() are used there, too. The Game class extends Canvas, showing all graphics.
@@ -87,7 +89,13 @@ public class Game extends Canvas implements Runnable
 	 * Reference to the menu.
 	 */
 	private Menu				menu;
-	
+	/**
+	 * Changes some settings in map object classes (for example, rocks do not spawn items in a client game).
+	 */
+	public int					gameType			= -1;
+
+	public Connector			connection;
+
 	/**
 	 * This pseudo-constructor is executed right before entering the main-loop. It creates a needed buffer strategy, as well as an input instance and a menu instance. It's not a real constructor as its execution has to be delayed since createBufferStrategy only works when
 	 * associated to a visible window or applet.
@@ -106,7 +114,7 @@ public class Game extends Canvas implements Runnable
 
 		input = new Keyboard(this);
 		menu = new Menu(this, input);
-		
+
 		Highscore.readHighscore();
 		Highscore.readName();
 	}
@@ -130,6 +138,16 @@ public class Game extends Canvas implements Runnable
 	public boolean isPlaying()
 	{
 		return this.playing;
+	}
+
+	/**
+	 * Care, method can return null if used before starting the game.
+	 * 
+	 * @return
+	 */
+	public CoreGame getCore()
+	{
+		return this.coregame;
 	}
 
 	/**
@@ -173,37 +191,49 @@ public class Game extends Canvas implements Runnable
 	public void startNormalGame()
 	{
 		coregame = new SingleGame(this, input);
+		Rock.spawn_items = true;
+		Rock.send_items = false;
 		playing = true;
 	}
 
 	public void startBattleGame(boolean[] players)
 	{
 		coregame = new BattleGame(this, input, players);
+		Rock.spawn_items = true;
+		Rock.send_items = false;
 		playing = true;
 	}
 
 	public void startTutorial()
 	{
 		coregame = new TutorialGame(this, input);
+		Rock.spawn_items = true;
+		Rock.send_items = false;
 		playing = true;
 	}
 
 	public ServerGame createServerGame(Server con)
 	{
 		coregame = new ServerGame(this, input, con);
+		Rock.spawn_items = true;
+		Rock.send_items = true;
 		return (ServerGame) coregame;
 	}
 
 	public ClientGame createClientGame(Client con)
 	{
 		coregame = new ClientGame(this, input, con);
+		Rock.spawn_items = false;
+		Rock.send_items = false;
 		return (ClientGame) coregame;
 	}
 
-	public void startPlaying(){
-		if(coregame!=null)
+	public void startPlaying()
+	{
+		if (coregame != null)
 			playing = true;
 	}
+
 	/**
 	 * Ends the core game by setting the boolean "playing". The methods update() and render() will now update and show the menu. The game data is not cleared, will be done when starting a new game.
 	 */

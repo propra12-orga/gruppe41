@@ -72,8 +72,8 @@ public class Menu
 														"No server found.",
 														"Waiting for an answer from the server...",
 														"Server authenticated.",
-														"Ready. Waiting for server to start the game.",
 														"Getting map data...",
+														"Ready. Waiting for server to start the game.",
 														"Started."
 														};
 	/**
@@ -470,6 +470,7 @@ public class Menu
 							this.network = Server.createServer(this.input);
 							if (network != null)
 							{
+								game.connection = this.network;
 								net_status = 1;
 							}
 							Change(SERVER_SCREEN);
@@ -478,6 +479,7 @@ public class Menu
 							this.network = Client.createClient(this.input);
 							if (network != null)
 							{
+								game.connection = this.network;
 								net_status = 1;
 							}
 							Change(CLIENT_SCREEN);
@@ -496,7 +498,7 @@ public class Menu
 						case 0:
 							if (net_status == 3)
 							{
-								network.sayReady(); // TODO
+								network.sayReady();
 							}
 							break;
 						case 1:
@@ -712,9 +714,9 @@ public class Menu
 				g.drawString(CLIENT_MESSAGES[net_status], 25, Game.HEIGHT - 25);
 				break;
 			default:
-				w = logo.getWidth();
-				h = logo.getHeight();
-				g.drawImage(logo, 0, Game.HEIGHT - h, w, Game.HEIGHT, 0, 0, w, h, null);
+				//w = logo.getWidth();
+				//h = logo.getHeight();
+				//g.drawImage(logo, 0, Game.HEIGHT - h, w, Game.HEIGHT, 0, 0, w, h, null);
 				break;
 		}
 
@@ -739,6 +741,7 @@ public class Menu
 		if (network != null)
 		{
 			network.close();
+			game.connection = null;
 			network = null;
 		}
 		net_status = 0;

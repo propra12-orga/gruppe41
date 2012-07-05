@@ -9,12 +9,12 @@ import java.net.Socket;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-import bomberman.Bomberman;
 import bomberman.game.Game;
 import bomberman.input.Keyboard;
 import bomberman.map.Map;
 import bomberman.map.MapObject;
 import bomberman.objects.terrain.Rock;
+import bomberman.players.Player;
 
 public class Server extends Connector
 {
@@ -38,6 +38,7 @@ public class Server extends Connector
 		{
 			server = new ServerSocket(port);
 			status++;
+			counter = 0;
 			createGame();
 			thread_in = new Thread()
 			{
@@ -53,6 +54,7 @@ public class Server extends Connector
 						while (true)
 						{
 							current = in.nextLine();
+							//System.out.println("Client: " + current);// for debugging and for fun
 							switch (status)
 							{
 								case 1:
@@ -81,7 +83,7 @@ public class Server extends Connector
 									else if (current.equals(END))
 										disconnect();
 									break;
-								case 4:
+								default:
 									if (current.equals(START))
 										startGame();
 									else
@@ -90,6 +92,7 @@ public class Server extends Connector
 										{
 											case 'W':
 												input[0] = true;
+												System.out.println("top...");
 												break;
 											case 'w':
 												input[0] = false;
@@ -118,6 +121,22 @@ public class Server extends Connector
 											case 'b':
 												input[4] = false;
 												break;
+											case '-':
+												core.endGame(true);
+												break;
+											case '+':
+												core.endGame(false);
+												break;
+											case 'U':
+												current = in.nextLine();
+												Scanner readInt = new Scanner(current);
+												if(readInt.hasNextInt()){
+													int pos = readInt.nextInt();
+													Player otherplayer = core.getMap().getPlayer(1);
+													otherplayer.x = pos % 10000;
+													otherplayer.y = pos / 10000;
+												}
+												break;
 										}
 									}
 									break;
@@ -133,7 +152,7 @@ public class Server extends Connector
 					{
 						status = 0;
 						disconnect();
-						e1.printStackTrace();
+						System.err.println();
 					}
 				}
 			};
@@ -141,7 +160,6 @@ public class Server extends Connector
 		}
 		catch (IOException e)
 		{
-			Connector.currentPort++;
 			System.out.println("Creating Server on port " + this.port
 			+ " not successful.");
 		}
@@ -199,6 +217,21 @@ public class Server extends Connector
 			out.println('B');
 			output[4] = true;
 		}
+		if (counter == 40)
+		{
+			counter = 0;
+			Player player = core.getMap().getPlayer(0);
+			try
+			{
+				out.println('U');
+				out.println(player.x + player.y * 10000 + " ");
+			}
+			catch (NullPointerException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		counter++;
 	}
 
 	public void disconnect()
@@ -218,8 +251,8 @@ public class Server extends Connector
 			e.printStackTrace();
 			status = 0;
 		}
-		if (Bomberman.getGame().isPlaying())
-			Bomberman.getGame().stopCoreGame();
+		if (game.isPlaying())
+			game.stopCoreGame();
 		thread_in.interrupt();
 		if (status != 0)
 			thread_in.run(); // restart thread for new client
@@ -254,7 +287,7 @@ public class Server extends Connector
 		{
 			if (o instanceof Rock)
 			{
-				rockPosition = o.x + o.y * Map.TILES_COUNT_X;
+				rockPosition = (o.x - Map.X_OFFS) / Map.TILE_SIZE + (o.y - Map.Y_OFFS) / Map.TILE_SIZE * Map.TILES_COUNT_X;
 				out.println(rockPosition);
 			}
 		}
@@ -263,14 +296,21 @@ public class Server extends Connector
 
 	public void createGame()
 	{
-		core = Bomberman.getGame().createServerGame(this);
+		core = game.createServerGame(this);
 	}
 
 	public void startGame()
 	{
-		Bomberman.getGame().startPlaying();
+		game.startPlaying();
+		status = 5;
 	}
 
+	public void Restart(){
+		out.println(RESTART);
+		core = game.createServerGame(this);
+		status = 2;
+	}
+	
 	public void sayReady()
 	{
 		out.println(READY);

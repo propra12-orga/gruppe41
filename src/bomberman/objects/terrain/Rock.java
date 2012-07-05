@@ -3,6 +3,7 @@ package bomberman.objects.terrain;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+import bomberman.Bomberman;
 import bomberman.animation.Animation;
 import bomberman.map.Map;
 import bomberman.map.MapObject;
@@ -22,8 +23,11 @@ import bomberman.resource.Image;
  */
 public class Rock extends MapObject
 {
-	public boolean		broken, ready_to_die;
-	private Animation	ani;
+	public static boolean	spawn_items	= true;
+	public static boolean	send_items	= false;
+
+	public boolean			broken, ready_to_die;
+	private Animation		ani;
 
 	public Rock(Map map, int tile_x, int tile_y)
 	{
@@ -93,7 +97,7 @@ public class Rock extends MapObject
 				return;
 		}
 
-		if (Math.random() < map.droprate)
+		if (spawn_items && Math.random() < map.droprate)
 		{
 			int powerup = (int) (Math.random() * 4 + 1);
 
@@ -101,15 +105,23 @@ public class Rock extends MapObject
 			{
 				case 1:
 					map.Add(new Bombup(map, getXTile(), getYTile()));
+					if (send_items)
+						Bomberman.getGame().connection.getOut().println("I B " + (getXTile() + getYTile() * 17)+" ");
 					break;
 				case 2:
 					map.Add(new Flameup(map, getXTile(), getYTile()));
+					if (send_items)
+						Bomberman.getGame().connection.getOut().println("I F " + (getXTile() + getYTile() * 17)+" ");
 					break;
 				case 3:
 					map.Add(new Kickup(map, getXTile(), getYTile()));
+					if (send_items)
+						Bomberman.getGame().connection.getOut().println("I K " + (getXTile() + getYTile() * 17)+" ");
 					break;
 				case 4:
 					map.Add(new Speedup(map, getXTile(), getYTile()));
+					if (send_items)
+						Bomberman.getGame().connection.getOut().println("I S " + (getXTile() + getYTile() * 17)+" ");
 					break;
 			}
 		}

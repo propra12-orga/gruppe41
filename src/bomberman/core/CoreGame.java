@@ -76,10 +76,11 @@ public abstract class CoreGame
 		this.highscore = System.currentTimeMillis();
 	}
 
-	public Map getMap(){
+	public Map getMap()
+	{
 		return this.map;
 	}
-	
+
 	/**
 	 * Pauses the game and saves the system time when game was paused. Not supported in network mode.
 	 */
@@ -87,6 +88,14 @@ public abstract class CoreGame
 	{
 		pauseTime = System.currentTimeMillis();
 		paused = true;
+	}
+
+	/**
+	 * Only used in network games. Will be overwritten in clientgame and servergame. Ends the game, to.
+	 */
+	public void endGame(boolean winner)
+	{
+		gameOver = true;
 	}
 
 	/**

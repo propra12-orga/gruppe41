@@ -3,6 +3,7 @@ package bomberman.network;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
+import bomberman.Bomberman;
 import bomberman.core.CoreGame;
 import bomberman.game.Game;
 import bomberman.input.Input;
@@ -16,6 +17,7 @@ public abstract class Connector implements Input, Connection
 	protected static final String	READY			= "Ready";
 	protected static final String	START			= "Sei Epsilon kleiner Null...";
 	protected static final String	END				= "BYE";
+	protected static final String	RESTART			= "RESTART";
 
 	public static int				currentPort		= DEFAULT_PORT;
 	public static String			currentHost		= "localhost";
@@ -31,6 +33,7 @@ public abstract class Connector implements Input, Connection
 	protected PrintWriter			out;
 	protected Scanner				in;
 	protected Thread				thread_in;
+	protected int					counter;
 
 	protected boolean[]				input;
 	protected boolean[]				output;
@@ -40,6 +43,7 @@ public abstract class Connector implements Input, Connection
 		this.port = currentPort;
 		this.keys = keys;
 		this.status = 0;
+		this.game = Bomberman.getGame();
 		input = new boolean[6];
 		output = new boolean[6];
 		for (int i = 0; i < 6; i++)
@@ -57,6 +61,11 @@ public abstract class Connector implements Input, Connection
 	public int getStatus()
 	{
 		return this.status;
+	}
+
+	public PrintWriter getOut()
+	{
+		return this.out;
 	}
 
 	public void sayStart()

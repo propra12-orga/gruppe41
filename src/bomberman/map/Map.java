@@ -9,6 +9,7 @@ import java.util.Vector;
 import bomberman.Bomberman;
 import bomberman.game.Game;
 import bomberman.objects.Moveable;
+import bomberman.players.Player;
 import bomberman.resource.Image;
 
 /**
@@ -72,6 +73,22 @@ public class Map
 		new MapParse(this, (Bomberman.isApplet ? Bomberman.appletDir : "") + path + "/" + name + ".xml");
 	}
 
+	/**
+	 * Player number 0-3, not 1-4 like shown in the menu. TODO - net tested 
+	 * @param number
+	 * @return
+	 */
+	public Player getPlayer(int number){
+		Player ret = null;
+		for(MapObject o : objects){
+			if(o instanceof Player){
+				if(((Player) o).player_id==number)
+					ret = (Player) o;
+			}
+		}
+		return ret;
+	}
+	
 	/**
 	 * Updates the map. The map itself won't change much, but the map objects are updated.
 	 */

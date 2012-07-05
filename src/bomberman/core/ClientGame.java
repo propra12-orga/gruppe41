@@ -8,24 +8,25 @@ import bomberman.game.Game;
 import bomberman.input.Keyboard;
 import bomberman.map.MapObject;
 import bomberman.network.Client;
-//import bomberman.objects.terrain.Rock;
+import bomberman.objects.terrain.Rock;
 import bomberman.players.Player;
 
 public final class ClientGame extends CoreGame
 {
 	private Client		connection;
 	protected boolean	won;
+	protected String[] end = {"Wait for server", "Exit"};
 
 	public ClientGame(Game game, Keyboard input, Client con)
 	{
 		super(game, input, "basic");
 		connection = con;
-//		MapObject current;
-//		for (int i=0;i<map.objects.size();i++)
-//		{
-//			current = map.objects.elementAt(i);
-//			if (current instanceof Rock) current.Die();
-//		}
+		MapObject current;
+		for (int i = map.objects.size(); 0 < i; i--)
+		{
+			current = map.objects.elementAt(i - 1);
+			if (current instanceof Rock) map.Remove(current);
+		}
 		map.Add(new Player(con, map, Game.spawns[0][0], Game.spawns[0][1], 0));
 		map.Add(new Player(input, map, Game.spawns[1][0], Game.spawns[1][1], 1));
 	}
@@ -57,7 +58,7 @@ public final class ClientGame extends CoreGame
 		g.fillRect(Game.WIDTH * 107 / 320, Game.HEIGHT * 93 / 320, Game.WIDTH * 108 / 320, Game.HEIGHT * 93 / 320);
 		g.setColor(Color.gray);
 		if (won)
-			g.drawString("Yout won!", Game.WIDTH * 31 / 80, Game.HEIGHT * 31 / 80);
+			g.drawString("You won!", Game.WIDTH * 31 / 80, Game.HEIGHT * 31 / 80);
 		else
 			g.drawString("You lost!", Game.WIDTH * 31 / 80, Game.HEIGHT * 31 / 80);
 
@@ -90,6 +91,11 @@ public final class ClientGame extends CoreGame
 		}
 	}
 
+	public void endGame(boolean winner){
+		super.endGame(winner);
+		won = winner;
+	}
+	
 	public void Update()
 	{
 		if (gameOver)
@@ -102,8 +108,8 @@ public final class ClientGame extends CoreGame
 			UpdatePause();
 			return;
 		}
-		map.Update(); // TODO
 		connection.update();
+		map.Update();
 		if (map.num_of_players < 2)
 		{
 			gameOver = true;
@@ -115,6 +121,15 @@ public final class ClientGame extends CoreGame
 					won = true;
 				}
 			}
+			if (won)
+			{
+				connection.getOut().println('+');
+			}
+			else
+			{
+				connection.getOut().println('-');
+			}
+
 		}
 	}
 

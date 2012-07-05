@@ -8,15 +8,20 @@ import java.net.Socket;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-import bomberman.Bomberman;
 import bomberman.game.Game;
 import bomberman.input.Keyboard;
-//import bomberman.map.Map;
-//import bomberman.objects.terrain.Rock;
+import bomberman.map.Map;
+import bomberman.objects.terrain.Rock;
+import bomberman.players.Player;
+import bomberman.powerups.Bombup;
+import bomberman.powerups.Flameup;
+import bomberman.powerups.Kickup;
+import bomberman.powerups.Speedup;
 
 public class Client extends Connector
 {
 	private Socket	connection;
+	private String	instruction;
 
 	public static Client createClient(Keyboard keys)
 	{
@@ -40,6 +45,8 @@ public class Client extends Connector
 			output[i] = false;
 			input[i] = false;
 		}
+		counter = 0;
+		instruction = null;
 		try
 		{
 			connection = new Socket(currentHost, port);
@@ -59,12 +66,14 @@ public class Client extends Connector
 				public void run()
 				{
 					String current;
+					Scanner readCurrent;
 					sayHello();
 					while (true)
 					{
 						try
 						{
 							current = in.nextLine();
+							System.out.println("Server: " + current);// for debugging and for fun
 							switch (status)
 							{
 								case 1:
@@ -79,29 +88,38 @@ public class Client extends Connector
 									break;
 								case 3:
 									Scanner mapread = new Scanner(current);
-									// int next;
-									if ((/*next = */mapread.nextInt()) == -1)
+									int next;
+									if ((next = mapread.nextInt()) == -1)
 									{
 										status++;
 										break;
 									}
-									// core.getMap().Add(new Rock(core.getMap(), next % Map.TILES_COUNT_X, next / Map.TILES_COUNT_X));
-									if (current.equals(READY))
-									{
-										createGame();
-									}
-									else if (current.equals(END))
+									core.getMap().Add(new Rock(core.getMap(), next % Map.TILES_COUNT_X, next / Map.TILES_COUNT_X));
+									if (current.equals(END))
 										disconnect();
 									break;
 								case 4:
-									if(current.equals(READY)){
+									if (current.equals(READY))
+									{
 										sayStart();
 										startGame();
 									}
 									break;
 								case 5:
-									if (current.equals(READY))
-										startGame();
+									if (current.equals(RESTART))
+									{
+										game.stopCoreGame();
+										createGame();
+										status = 2;
+										try
+										{
+											Thread.sleep(100);
+										}
+										catch (Exception e)
+										{
+										}
+										sayReady();
+									}
 									else
 									{
 										switch (current.charAt(0))
@@ -136,6 +154,26 @@ public class Client extends Connector
 											case 'b':
 												input[4] = false;
 												break;
+											case '-':
+												core.endGame(true);
+												break;
+											case '+':
+												core.endGame(false);
+												break;
+											case 'U':
+												current = in.nextLine();
+												readCurrent = new Scanner(current);
+												if (readCurrent.hasNextInt())
+												{
+													int pos = readCurrent.nextInt();
+													Player otherplayer = core.getMap().getPlayer(0);
+													otherplayer.x = pos % 10000;
+													otherplayer.y = pos / 10000;
+												}
+												break;
+											case 'I':
+												instruction = new String(current);
+												break;
 										}
 									}
 									break;
@@ -158,6 +196,42 @@ public class Client extends Connector
 
 	public void update()
 	{
+		if (instruction != null)
+		{
+			Scanner readInstruction = new Scanner(instruction);
+			try
+			{
+				if (instruction.charAt(0) == 'I')
+				{
+					readInstruction.next();
+					readInstruction.next();
+					int pos = readInstruction.nextInt();
+					switch (instruction.charAt(2))
+					{
+						case 'B':
+							core.getMap().Add(new Bombup(core.getMap(), pos % Map.TILES_COUNT_X, pos / Map.TILES_COUNT_X));
+							break;
+						case 'F':
+							core.getMap().Add(new Flameup(core.getMap(), pos % Map.TILES_COUNT_X, pos / Map.TILES_COUNT_X));
+							break;
+						case 'K':
+							core.getMap().Add(new Kickup(core.getMap(), pos % Map.TILES_COUNT_X, pos / Map.TILES_COUNT_X));
+							break;
+						case 'S':
+							core.getMap().Add(new Speedup(core.getMap(), pos % Map.TILES_COUNT_X, pos / Map.TILES_COUNT_X));
+							break;
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+			finally
+			{
+				instruction = null;
+			}
+		}
 		if (output[0] && !keys.get(Game.controls[1][0]))
 		{
 			out.println('w');
@@ -208,6 +282,21 @@ public class Client extends Connector
 			out.println('B');
 			output[4] = true;
 		}
+		if (counter == 40)
+		{
+			counter = 0;
+			Player player = core.getMap().getPlayer(1);
+			try
+			{
+				out.println('U');
+				out.println(player.x + player.y * 10000);
+			}
+			catch (NullPointerException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		counter++;
 	}
 
 	public void sayHello()
@@ -227,8 +316,8 @@ public class Client extends Connector
 		{
 			System.err.println(e);
 		}
-		if (Bomberman.getGame().isPlaying())
-			Bomberman.getGame().stopCoreGame();
+		if (game.isPlaying())
+			game.stopCoreGame();
 	}
 
 	public void disconnect()
@@ -238,13 +327,13 @@ public class Client extends Connector
 
 	public void createGame()
 	{
-		core = Bomberman.getGame().createClientGame(this);
+		core = game.createClientGame(this);
 	}
 
 	public void startGame()
 	{
 		status++;
-		Bomberman.getGame().startPlaying();
+		game.startPlaying();
 	}
 
 	public void sayReady()

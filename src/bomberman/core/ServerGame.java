@@ -12,8 +12,8 @@ import bomberman.players.Player;
 
 public final class ServerGame extends CoreGame
 {
-	private Server	connection;
-	protected boolean won;
+	private Server		connection;
+	protected boolean	won;
 
 	public ServerGame(Game game, Keyboard input, Server con)
 	{
@@ -31,7 +31,9 @@ public final class ServerGame extends CoreGame
 			switch (selected)
 			{
 				case 0:
-					connection.sayStart();
+					input.clear();
+					game.stopCoreGame();
+					connection.Restart();
 					break;
 				case 1:
 					if (connection != null)
@@ -58,7 +60,7 @@ public final class ServerGame extends CoreGame
 		g.fillRect(Game.WIDTH * 107 / 320, Game.HEIGHT * 93 / 320, Game.WIDTH * 108 / 320, Game.HEIGHT * 93 / 320);
 		g.setColor(Color.gray);
 		if (won)
-			g.drawString("Yout won!", Game.WIDTH * 31 / 80, Game.HEIGHT * 31 / 80);
+			g.drawString("You won!", Game.WIDTH * 31 / 80, Game.HEIGHT * 31 / 80);
 		else
 			g.drawString("You lost!", Game.WIDTH * 31 / 80, Game.HEIGHT * 31 / 80);
 
@@ -91,6 +93,11 @@ public final class ServerGame extends CoreGame
 		}
 	}
 
+	public void endGame(boolean winner){
+		super.endGame(winner);
+		won = winner;
+	}
+	
 	public void Update()
 	{
 		if (gameOver)
@@ -103,17 +110,26 @@ public final class ServerGame extends CoreGame
 			UpdatePause();
 			return;
 		}
-		map.Update();
 		connection.update();
+		map.Update();
 		if (map.num_of_players < 2)
 		{
 			gameOver = true;
 			won = false;
 			for (MapObject o : map.objects)
 			{
-				if (o instanceof Player && ((Player) o).player_id==0){
+				if (o instanceof Player && ((Player) o).player_id == 0)
+				{
 					won = true;
 				}
+			}
+			if (won)
+			{
+				connection.getOut().println('+');
+			}
+			else
+			{
+				connection.getOut().println('-');
 			}
 		}
 	}

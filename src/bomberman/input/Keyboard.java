@@ -342,6 +342,22 @@ public class Keyboard implements KeyListener, Input
 	}
 
 	/**
+	 * Used for network games. Returns the click information, but does not consume it.
+	 * @param k
+	 * @return
+	 */
+	public boolean getClick(int k)
+		{
+			if (-1 < k && k < 256)
+			{
+				return click[k];
+			}
+			else
+			{
+				return false;
+			}
+	}
+	/**
 	 * Method has to be implemented because of the interface input. This method is only used by players controlled via network. Always returns false.
 	 */
 	public boolean netget(int type)
