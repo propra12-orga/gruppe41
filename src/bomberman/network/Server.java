@@ -12,6 +12,9 @@ import java.util.Scanner;
 import bomberman.Bomberman;
 import bomberman.game.Game;
 import bomberman.input.Keyboard;
+import bomberman.map.Map;
+import bomberman.map.MapObject;
+import bomberman.objects.terrain.Rock;
 
 public class Server extends Connector
 {
@@ -35,6 +38,7 @@ public class Server extends Connector
 		{
 			server = new ServerSocket(port);
 			status++;
+			createGame();
 			thread_in = new Thread()
 			{
 				String	current;
@@ -64,7 +68,10 @@ public class Server extends Connector
 									break;
 								case 2:
 									if (current.equals(READY))
+									{
 										status++;
+										transferMap();
+									}
 									else if (current.equals(END))
 										disconnect();
 									break;
@@ -224,7 +231,8 @@ public class Server extends Connector
 	{
 		try
 		{
-			client.close();
+			if (client != null)
+				client.close();
 			server.close();
 		}
 		catch (IOException e)
@@ -241,13 +249,26 @@ public class Server extends Connector
 
 	public void transferMap()
 	{
-		// TODO will be written later, not implemented in test version
+		int rockPosition;
+		for (MapObject o : core.getMap().objects)
+		{
+			if (o instanceof Rock)
+			{
+				rockPosition = o.x + o.y * Map.TILES_COUNT_X;
+				out.println(rockPosition);
+			}
+		}
+		out.println(-1);
+	}
+
+	public void createGame()
+	{
+		core = Bomberman.getGame().createServerGame(this);
 	}
 
 	public void startGame()
 	{
-		status = 4;
-		Bomberman.getGame().startServerGame(this);
+		Bomberman.getGame().startPlaying();
 	}
 
 	public void sayReady()

@@ -3,6 +3,7 @@ package bomberman.network;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
+import bomberman.core.CoreGame;
 import bomberman.game.Game;
 import bomberman.input.Input;
 import bomberman.input.Keyboard;
@@ -14,16 +15,18 @@ public abstract class Connector implements Input, Connection
 	protected static final String	HELLO			= "HelloBomb";
 	protected static final String	READY			= "Ready";
 	protected static final String	START			= "Sei Epsilon kleiner Null...";
-	protected static final String	END				= "goodbye";
+	protected static final String	END				= "BYE";
 
 	public static int				currentPort		= DEFAULT_PORT;
+	public static String			currentHost		= "localhost";
 
 	/**
-	 * Status: 0 = not active (object could not be created), 1 = active, but not connected (server only) or found server who didn't answer, 2 = connected, but client not ready, 3 = ready to start the game, 3 = playing.
+	 * Status: 0 = not active (object could not be created), 1 = active, but not connected (server only) or found server who didn't answer, 2 = connected, but client not ready, 3 = ready to start the game, 4 = starting.
 	 */
 	protected int					status;
 	protected Keyboard				keys;
 	protected Game					game;
+	protected CoreGame				core;
 	protected int					port;
 	protected PrintWriter			out;
 	protected Scanner				in;

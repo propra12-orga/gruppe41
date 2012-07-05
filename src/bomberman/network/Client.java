@@ -11,6 +11,8 @@ import java.util.Scanner;
 import bomberman.Bomberman;
 import bomberman.game.Game;
 import bomberman.input.Keyboard;
+//import bomberman.map.Map;
+//import bomberman.objects.terrain.Rock;
 
 public class Client extends Connector
 {
@@ -19,7 +21,7 @@ public class Client extends Connector
 	public static Client createClient(Keyboard keys)
 	{
 		Client ret;
-		ret = new Client("", keys);
+		ret = new Client(keys);
 		if (ret.status != 0)
 		{
 			return ret;
@@ -30,7 +32,7 @@ public class Client extends Connector
 		}
 	}
 
-	public Client(String host, Keyboard keys)
+	public Client(Keyboard keys)
 	{
 		super(keys);
 		for (int i = 0; i < 5; i++)
@@ -40,10 +42,11 @@ public class Client extends Connector
 		}
 		try
 		{
-			connection = new Socket("localhost", port);
+			connection = new Socket(currentHost, port);
 			out = new PrintWriter(new OutputStreamWriter(connection.getOutputStream()), true);
 			in = new Scanner(new InputStreamReader(connection.getInputStream()));
 			status++;
+			createGame();
 		}
 		catch (IOException e)
 		{
@@ -75,16 +78,29 @@ public class Client extends Connector
 									}
 									break;
 								case 3:
-									if (current.equals(START))
+									Scanner mapread = new Scanner(current);
+									// int next;
+									if ((/*next = */mapread.nextInt()) == -1)
 									{
-										sayStart();
-										startGame();
+										status++;
+										break;
+									}
+									// core.getMap().Add(new Rock(core.getMap(), next % Map.TILES_COUNT_X, next / Map.TILES_COUNT_X));
+									if (current.equals(READY))
+									{
+										createGame();
 									}
 									else if (current.equals(END))
 										disconnect();
 									break;
 								case 4:
-									if (current.equals(START))
+									if(current.equals(READY)){
+										sayStart();
+										startGame();
+									}
+									break;
+								case 5:
+									if (current.equals(READY))
 										startGame();
 									else
 									{
@@ -220,16 +236,15 @@ public class Client extends Connector
 		close();
 	}
 
-	public void transferMap()
+	public void createGame()
 	{
-		// TODO Auto-generated method stub
+		core = Bomberman.getGame().createClientGame(this);
 	}
 
 	public void startGame()
 	{
-		sayStart();
-		status = 4;
-		Bomberman.getGame().startClientGame(this);
+		status++;
+		Bomberman.getGame().startPlaying();
 	}
 
 	public void sayReady()

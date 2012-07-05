@@ -1,12 +1,12 @@
 package bomberman.core;
 
-import highscore.Highscore;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 
 import bomberman.game.Game;
+import bomberman.highscore.Highscore;
 import bomberman.input.Keyboard;
 import bomberman.objects.terrain.Exit;
 import bomberman.players.Player;
@@ -94,7 +94,7 @@ public final class SingleGame extends CoreGame
 		g.fillRect(Game.WIDTH * 107 / 320, Game.HEIGHT * 93 / 320, Game.WIDTH * 108 / 320, Game.HEIGHT * 93 / 320);
 		g.setColor(Color.gray);
 		if (won)
-			g.drawString("Yout won!", Game.WIDTH * 31 / 80, Game.HEIGHT * 31 / 80);
+			g.drawString("You won!", Game.WIDTH * 31 / 80, Game.HEIGHT * 31 / 80);
 		else
 			g.drawString("You lost!", Game.WIDTH * 31 / 80, Game.HEIGHT * 31 / 80);
 

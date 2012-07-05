@@ -1,13 +1,12 @@
 package bomberman.menu;
 
-import highscore.Highscore;
-
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 import bomberman.game.Game;
+import bomberman.highscore.Highscore;
 import bomberman.input.Keyboard;
 import bomberman.network.Client;
 import bomberman.network.Connector;
@@ -35,16 +34,16 @@ public class Menu
 	 * Two dimensional array containing the menu items. First index is the selected menu, the second one is the number on the current menu screen.
 	 */
 	private static final String[][]	items				= {
-														{ "Start  Game", "Key Settings", "Highscore", "Exit" },
+														{ "Start  Game", "Settings", "Highscore", "Exit" },
 														{ "Singleplayer", "Local Battle", "Network Duel", "Tutorial", "Back" },
 														{ "Player 1   ", "Player 2   ", "Player 3   ", "Player 4   " },
-														{ "Player ", "Back" },
+														{ "Player ", "Set Name: ", "Back" },
 														{ "Up", "Down", "Left", "Right", "Action", "", "O.K." },
 														{ "Reset Highscore", "Back" },
 														{ "Host Game", "Find Game", "Settings", "Back" },
 														{ "Start", "Back" },
 														{ "I'm ready!", "Back" },
-														{ "Reset Port", "Port++", "Set IP", "Back" }
+														{ "Reset Port", "Port++", "Host: ", "Back" }
 														};
 	/**
 	 * These are pairs of integers. First integer states the menu, the second one is the selected item. If an item is listed here, the player can change it with the right/left arrows.
@@ -63,7 +62,8 @@ public class Menu
 														"Server was not able to start on the selected port. Choose a different one and try again.",
 														"Server started successfully.",
 														"Client found. Waiting for answer",
-														"Client ready. You can start the game now.", "Starting..."
+														"Client ready. You can start the game now.",
+														"Transfering data...", "Started."
 														};
 	/**
 	 * Messages shown when trying to connect to a network game.
@@ -73,7 +73,8 @@ public class Menu
 														"Waiting for an answer from the server...",
 														"Server authenticated.",
 														"Ready. Waiting for server to start the game.",
-														"Starting..."
+														"Getting map data...",
+														"Started."
 														};
 	/**
 	 * Saves which players are selected when starting a multiplayer game.
@@ -138,6 +139,10 @@ public class Menu
 	 */
 	private Connector				network;
 
+	private char[]					name;
+
+	private int						writePosition;
+
 	/**
 	 * Creates the menu. The logo will be created by randomness.
 	 * 
@@ -162,6 +167,7 @@ public class Menu
 	 */
 	private void Change(int menu)
 	{
+		this.input.clear();
 		this.menu = menu;
 		this.selected = 0;
 		this.count = items[menu].length;
@@ -196,6 +202,38 @@ public class Menu
 				else if (player_sel < 1)
 					player_sel += 1;
 			}
+			else if (wait_for_key)
+			{
+				int key = -1;
+				if (input.use(KeyEvent.VK_ESCAPE))
+				{
+					wait_for_key = false;
+					input.clear();
+				}
+				if (input.use(KeyEvent.VK_BACK_SPACE) && 0 < writePosition)
+				{
+					writePosition--;
+					name[writePosition] = 0;
+				}
+				for (int i = 65; i < 91; i++)
+				{
+					if (input.use(i))
+						key = i;
+				}
+				if (0 < key)
+				{
+					name[writePosition] = (char) key;
+					writePosition++;
+					if (writePosition == 4)
+					{
+						wait_for_key = false;
+						Highscore.playerName = new String(name);
+						Highscore.writeName();
+						input.clear();
+					}
+				}
+				return;
+			}
 		}
 		else if (menu == KEYBOARD_SETTINGS)
 		{
@@ -215,6 +253,71 @@ public class Menu
 					wait_for_key = false;
 				}
 
+				return;
+			}
+		}
+		else if (menu == NET_SETTINGS)
+		{
+			if (wait_for_key)
+			{
+				int key = -1;
+				if (input.use(KeyEvent.VK_ESCAPE))
+				{
+					wait_for_key = false;
+					input.clear();
+				}
+				if (input.use(KeyEvent.VK_BACK_SPACE) && 0 < writePosition)
+				{
+					writePosition--;
+					name[writePosition] = 0;
+				}
+				if (input.use(KeyEvent.VK_L) || input.use(KeyEvent.VK_ENTER))
+				{
+					wait_for_key = false;
+					input.clear();
+					Connector.currentHost = "localhost";
+				}
+				for (int i = 48; i < 58; i++)
+				{
+					if (input.use(i))
+						key = i;
+				}
+				if (0 < key)
+				{
+					name[writePosition] = (char) key;
+					writePosition++;
+					if (writePosition == 11)
+					{
+						wait_for_key = false;
+						char[] ip = new char[14];
+						for (int i = 0; i < 14; i++)
+						{
+							if (((i + 1) % 4) == 0)
+							{
+								ip[i] = '.';
+							}
+							else if (i < 3)
+							{
+								ip[i] = name[i];
+							}
+							else if (i < 7)
+							{
+								ip[i] = name[i - 1];
+							}
+							else if (i < 11)
+							{
+								ip[i] = name[i - 2];
+							}
+							else
+							{
+								ip[i] = name[i - 3];
+							}
+						}
+						Connector.currentHost = new String(ip);
+						Highscore.writeName();
+						input.clear();
+					}
+				}
 				return;
 			}
 		}
@@ -321,6 +424,12 @@ public class Menu
 							Change(KEYBOARD_SETTINGS);
 							break;
 						case 1:
+							input.clear();
+							writePosition = 0;
+							name = new char[4];
+							wait_for_key = true;
+							break;
+						case 2:
 							Change(TITLE_SCREEN);
 							player_sel = 1;
 							break;
@@ -347,6 +456,7 @@ public class Menu
 					{
 						case 0:
 							Highscore.resetHighscore();
+							Highscore.readHighscore();
 							break;
 						case 1:
 							Change(TITLE_SCREEN);
@@ -386,7 +496,7 @@ public class Menu
 						case 0:
 							if (net_status == 3)
 							{
-								network.sayStart();
+								network.sayReady(); // TODO
 							}
 							break;
 						case 1:
@@ -418,7 +528,10 @@ public class Menu
 							Connector.currentPort++;
 							break;
 						case 2:
-							System.out.println("Not implemented yet.");
+							input.clear();
+							writePosition = 0;
+							name = new char[11];
+							wait_for_key = true;
 							break;
 						case 3:
 							Change(NETWORK_SCREEN);
@@ -488,6 +601,17 @@ public class Menu
 			{
 				if (s == items[SETTINGS_SCREEN][0])
 					s += player_sel + " Keys";
+				else if (i == 1)
+				{
+					if (wait_for_key)
+					{
+						s += new String(name);
+					}
+					else
+					{
+						s += Highscore.playerName;
+					}
+				}
 			}
 			else if (menu == KEYBOARD_SETTINGS)
 			{
@@ -507,6 +631,20 @@ public class Menu
 					{
 						String k = Keyboard.KEYS[Game.controls[player_sel - 1][i]];
 						s = k != "" ? k : String.format("0x%02X", Game.controls[player_sel - 1][i]);
+					}
+				}
+			}
+			else if (menu == NET_SETTINGS)
+			{
+				if (i == 2)
+				{
+					if (wait_for_key)
+					{
+						s += new String(name);
+					}
+					else
+					{
+						s += Connector.currentHost;
 					}
 				}
 			}
@@ -547,6 +685,24 @@ public class Menu
 
 		switch (menu)
 		{
+			case HIGHSCORE:
+				g.setColor(Color.white);
+				try
+				{
+					for (int i = 0; i < Highscore.HSS; i++)
+					{
+						g.drawString(Integer.toString(Highscore.points[i]), Game.WIDTH - 100, Game.HEIGHT + 25 * i - 25 * Highscore.HSS);
+						g.drawString(Highscore.names[i], Game.WIDTH - 75, Game.HEIGHT + 25 * i - 25 * Highscore.HSS);
+					}
+				}
+				catch (NullPointerException e)
+				{
+					e.printStackTrace();
+				}
+				w = logo.getWidth();
+				h = logo.getHeight();
+				g.drawImage(logo, 0, Game.HEIGHT - h, w, Game.HEIGHT, 0, 0, w, h, null);
+				break;
 			case SERVER_SCREEN:
 				g.setColor(Color.white);
 				g.drawString(SERVER_MESSAGES[net_status], 25, Game.HEIGHT - 25);

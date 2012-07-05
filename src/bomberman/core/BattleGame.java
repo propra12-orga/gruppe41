@@ -1,12 +1,12 @@
 package bomberman.core;
 
-import highscore.Highscore;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 
 import bomberman.game.Game;
+import bomberman.highscore.Highscore;
 import bomberman.input.Keyboard;
 import bomberman.map.MapObject;
 import bomberman.players.Player;
@@ -53,6 +53,8 @@ public final class BattleGame extends CoreGame
 					break;
 			}
 		}
+		if (input.use(KeyEvent.VK_ESCAPE))
+			game.stopCoreGame();
 	}
 
 	public void UpdatePause()

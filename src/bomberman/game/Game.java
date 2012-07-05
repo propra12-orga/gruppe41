@@ -12,6 +12,7 @@ import bomberman.core.CoreGame;
 import bomberman.core.ServerGame;
 import bomberman.core.SingleGame;
 import bomberman.core.TutorialGame;
+import bomberman.highscore.Highscore;
 import bomberman.input.Keyboard;
 import bomberman.menu.Menu;
 import bomberman.network.Client;
@@ -37,6 +38,21 @@ public class Game extends Canvas implements Runnable
 	 * Frames per second will be printed to console if this boolean is true.
 	 */
 	private static boolean		show_fps			= false;
+	/**
+	 * This two dimensional array saves the player controls. First index states the player, second one the type of order: (0) move up, (1) move down, (2) move left, (3) move right, (4) bomb.
+	 * 
+	 * @see bomberman.input.Input
+	 */
+	public static int[][]		controls			= {
+													{ KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, KeyEvent.VK_CONTROL },
+													{ KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, Keyboard.VK_LCONTROL },
+													{ KeyEvent.VK_I, KeyEvent.VK_K, KeyEvent.VK_J, KeyEvent.VK_L, KeyEvent.VK_V },
+													{ KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD5, KeyEvent.VK_NUMPAD4, KeyEvent.VK_NUMPAD6, KeyEvent.VK_ADD }
+													};
+	/**
+	 * Two dimensional array, first index is the player, the second is x or y position.
+	 */
+	public static int[][]		spawns				= { { 0, 0 }, { 16, 0 }, { 0, 10 }, { 16, 10 } };
 	/**
 	 * A buffer strategy is the way how images are painted and saved while rendering. This game uses double buffering.
 	 */
@@ -71,22 +87,7 @@ public class Game extends Canvas implements Runnable
 	 * Reference to the menu.
 	 */
 	private Menu				menu;
-	/**
-	 * This two dimensional array saves the player controls. First index states the player, second one the type of order: (0) move up, (1) move down, (2) move left, (3) move right, (4) bomb.
-	 * 
-	 * @see bomberman.input.Input
-	 */
-	public static int[][]		controls			= {
-													{ KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, KeyEvent.VK_CONTROL },
-													{ KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, Keyboard.VK_LCONTROL },
-													{ KeyEvent.VK_I, KeyEvent.VK_K, KeyEvent.VK_J, KeyEvent.VK_L, KeyEvent.VK_V },
-													{ KeyEvent.VK_NUMPAD8, KeyEvent.VK_NUMPAD5, KeyEvent.VK_NUMPAD4, KeyEvent.VK_NUMPAD6, KeyEvent.VK_ADD }
-													};
-	/**
-	 * Two dimensional array, first index is the player, the second is x or y position.
-	 */
-	public static int[][]		spawns				= { { 0, 0 }, { 16, 0 }, { 0, 10 }, { 16, 10 } };
-
+	
 	/**
 	 * This pseudo-constructor is executed right before entering the main-loop. It creates a needed buffer strategy, as well as an input instance and a menu instance. It's not a real constructor as its execution has to be delayed since createBufferStrategy only works when
 	 * associated to a visible window or applet.
@@ -105,6 +106,9 @@ public class Game extends Canvas implements Runnable
 
 		input = new Keyboard(this);
 		menu = new Menu(this, input);
+		
+		Highscore.readHighscore();
+		Highscore.readName();
 	}
 
 	public void start()
@@ -184,18 +188,22 @@ public class Game extends Canvas implements Runnable
 		playing = true;
 	}
 
-	public void startServerGame(Server con)
+	public ServerGame createServerGame(Server con)
 	{
 		coregame = new ServerGame(this, input, con);
-		playing = true;
+		return (ServerGame) coregame;
 	}
 
-	public void startClientGame(Client con)
+	public ClientGame createClientGame(Client con)
 	{
 		coregame = new ClientGame(this, input, con);
-		playing = true;
+		return (ClientGame) coregame;
 	}
 
+	public void startPlaying(){
+		if(coregame!=null)
+			playing = true;
+	}
 	/**
 	 * Ends the core game by setting the boolean "playing". The methods update() and render() will now update and show the menu. The game data is not cleared, will be done when starting a new game.
 	 */

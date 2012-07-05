@@ -8,17 +8,24 @@ import bomberman.game.Game;
 import bomberman.input.Keyboard;
 import bomberman.map.MapObject;
 import bomberman.network.Client;
+//import bomberman.objects.terrain.Rock;
 import bomberman.players.Player;
 
 public final class ClientGame extends CoreGame
 {
-	private Client	connection;
-	protected boolean won;
+	private Client		connection;
+	protected boolean	won;
 
 	public ClientGame(Game game, Keyboard input, Client con)
 	{
 		super(game, input, "basic");
 		connection = con;
+//		MapObject current;
+//		for (int i=0;i<map.objects.size();i++)
+//		{
+//			current = map.objects.elementAt(i);
+//			if (current instanceof Rock) current.Die();
+//		}
 		map.Add(new Player(con, map, Game.spawns[0][0], Game.spawns[0][1], 0));
 		map.Add(new Player(input, map, Game.spawns[1][0], Game.spawns[1][1], 1));
 	}
@@ -95,7 +102,7 @@ public final class ClientGame extends CoreGame
 			UpdatePause();
 			return;
 		}
-		//map.Update();
+		map.Update(); // TODO
 		connection.update();
 		if (map.num_of_players < 2)
 		{
@@ -103,7 +110,8 @@ public final class ClientGame extends CoreGame
 			won = false;
 			for (MapObject o : map.objects)
 			{
-				if (o instanceof Player && ((Player) o).player_id==1){
+				if (o instanceof Player && ((Player) o).player_id == 1)
+				{
 					won = true;
 				}
 			}
