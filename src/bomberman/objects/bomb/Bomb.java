@@ -56,7 +56,7 @@ public class Bomb extends Moveable
 		super(map, tile_x, tile_y);
 
 		this.player = player;
-		this.movement_speed += 2;
+		this.movement_speed += 8;
 
 		img = new Animation(Image.read("data/sprites/bomb.png"), 0, 0, WIDTH, HEIGHT, 3, 250, true, 1);
 
