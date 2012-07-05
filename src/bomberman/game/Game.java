@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 
+import bomberman.Bomberman;
 import bomberman.core.BattleGame;
 import bomberman.core.ClientGame;
 import bomberman.core.CoreGame;
@@ -115,8 +116,11 @@ public class Game extends Canvas implements Runnable
 		input = new Keyboard(this);
 		menu = new Menu(this, input);
 
-		Highscore.readHighscore();
-		Highscore.readName();
+		if (Bomberman.isApplication) // Applets do not have io-permissions
+		{
+			Highscore.readHighscore();
+			Highscore.readName();
+		}
 	}
 
 	public void start()

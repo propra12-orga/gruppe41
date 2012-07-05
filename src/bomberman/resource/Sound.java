@@ -27,7 +27,7 @@ public class Sound
 	{
 		try
 		{
-			clip = Applet.newAudioClip(new URL((Bomberman.isApplication ? "file:" : Bomberman.appletDir) + name));
+			clip = Applet.newAudioClip(new URL((Bomberman.isApplet ? Bomberman.applet.getCodeBase() : "file:") + name));
 		}
 		catch (MalformedURLException e)
 		{

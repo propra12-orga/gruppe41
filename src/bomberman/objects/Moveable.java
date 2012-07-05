@@ -42,7 +42,7 @@ public class Moveable extends MapObject
 			return false;
 	}
 
-	public boolean MoveX(int offs)
+	private boolean MoveX(int offs)
 	{
 		MapObject[] ol = map.getBlockingObjects(this, x + offs, y);
 
@@ -105,7 +105,7 @@ public class Moveable extends MapObject
 			return false;
 	}
 
-	public boolean MoveY(int offs)
+	private boolean MoveY(int offs)
 	{
 		MapObject[] ol = map.getBlockingObjects(this, x, y + offs);
 
@@ -157,9 +157,20 @@ public class Moveable extends MapObject
 		}
 	}
 
+	/**
+	 * Moves a moveable map-object on the x- and/or y-axis. Returns the direction the object is facing afterwards and additionally, whether a full step was possible (if not it means the object would have moved e.g. 4 pixels, but couldn't do so as a wall would have blocked it and
+	 * therefore it moved only 3 pixels)
+	 * 
+	 * @param offs_x
+	 * @param offs_y
+	 * @return
+	 */
 	public int[] Move(int offs_x, int offs_y)
 	{
 		int ret = FACE_DIRECTION_NONE;
+
+		if (Math.abs(offs_x) > 1 || Math.abs(offs_y) > 1)
+			return new int[] { ret, 0 };
 
 		int tile_x_prev = getXTile(), tile_y_prev = getYTile();
 		int x_prev = x, y_prev = y;

@@ -70,7 +70,7 @@ public class Map
 		border_left = Image.read(path + "/border_left.png");
 		border_right = Image.read(path + "/border_right.png");
 
-		new MapParse(this, (Bomberman.isApplet ? Bomberman.appletDir : "") + path + "/" + name + ".xml");
+		new MapParse(this, (Bomberman.isApplet ? Bomberman.applet.getCodeBase() : "") + path + "/" + name + ".xml");
 	}
 
 	/**

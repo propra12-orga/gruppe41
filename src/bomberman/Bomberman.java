@@ -29,10 +29,6 @@ public class Bomberman
 	 * Applet-instance if set via setApplet
 	 */
 	public static Applet	applet;
-	/**
-	 * Relative path to data files if run as applet
-	 */
-	public static String	appletDir	= "file:../";
 
 	private static Game		bomberman;
 
